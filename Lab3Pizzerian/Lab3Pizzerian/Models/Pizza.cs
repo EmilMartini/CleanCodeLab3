@@ -10,6 +10,7 @@ namespace Lab3Pizzerian.Models
 	{
 		public string Name { get; set; }
 		public List<EnumIngredient> Standard { get; set; }
+		public int StandardPrice { get; set; }
 		public List<EnumIngredient> Extras { get; set; }
 		// kan vi använda PrototypeDesignpattern när vi skapar pizzor? 
 		// Där vår PizzaMeny är mallen för hur pizzan skall se ut i grunden
