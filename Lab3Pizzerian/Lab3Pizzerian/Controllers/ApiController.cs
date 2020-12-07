@@ -2,6 +2,7 @@
 using Lab3Pizzerian.Extensions;
 using Lab3Pizzerian.Models;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,6 +80,7 @@ namespace Lab3Pizzerian.Controllers
 			}
 		}
 
+		[SwaggerOperation(Summary = "Get current pizza menu")]
 		[Route("Menu")]
 		[HttpGet]
 		public IActionResult GetMenu()
