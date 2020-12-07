@@ -1,14 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lab3Pizzerian.Enumerations
 {
-	[JsonConverter(typeof(StringEnumConverter))]
 	public enum EnumStatus
 	{
 		[Description("Done")]
