@@ -9,7 +9,7 @@ namespace Lab3Pizzerian.Models
 	public class PizzaMenuModel
 	{
 		public string Name { get; set; }
-		public List<string> Ingredents { get; set; }
+		public List<string> Ingredients { get; set; }
 		public int Price { get; set; }
 	}
 }
