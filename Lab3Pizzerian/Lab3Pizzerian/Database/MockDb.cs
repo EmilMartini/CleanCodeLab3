@@ -13,7 +13,6 @@ namespace Lab3Pizzerian
         public Dictionary<EnumIngredient, int> Ingredients { get; }
         public Dictionary<EnumDrink, int> Drinks { get; }
 
-
         public static MockDb GetDbInstance()
         {
             if(instance == null)
