@@ -1,8 +1,8 @@
 # CleanCodeLab3
-# Daniel Andersson
-# Emil Martini
+## Daniel Andersson
+## Emil Martini
 
 #Design Patterns
-Singleton
-
-Factory
+-Singleton
+-Factory
+-Prototype
