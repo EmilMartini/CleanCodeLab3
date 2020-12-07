@@ -28,13 +28,13 @@ namespace Lab3Pizzerian.Controllers
             }
         }
 
-        [Route("Order")]
+        [Route("Orders")]
         [HttpGet]
-        public IActionResult GetOrder()
+        public IActionResult GetOrders()
         {
             MockDb instance = MockDb.GetDbInstance();
             var orders = instance.GetOrders();
-            if(orders != null)
+            if (orders != null)
             {
                 return new OkObjectResult(orders);
             } else
@@ -43,7 +43,7 @@ namespace Lab3Pizzerian.Controllers
             }
         }
 
-        [Route("Order/{OrderId}")]
+        [Route("Orders/{OrderId}")]
         [HttpGet]
         public IActionResult GetOrder(string orderId)
         {
@@ -59,14 +59,12 @@ namespace Lab3Pizzerian.Controllers
             }
         }
 
-        [Route("Order/{OrderStatus}")]
+        [Route("Orders/{OrderStatus:int}")]
         [HttpGet]
-        public IActionResult GetOrders(string OrderStatus)
+        public IActionResult GetOrdersByStatus(int OrderStatus)
         {
             MockDb instance = MockDb.GetDbInstance();
-            OrderStatus = OrderStatus.ToLower();
-            OrderStatus = OrderStatus.Substring(0, 1).ToUpper() + OrderStatus.Substring(1, OrderStatus.Length);
-            var order = instance.GetOrders((EnumStatus)Enum.Parse(typeof(EnumStatus), OrderStatus));
+            var order = instance.GetOrders((EnumStatus)OrderStatus);
             if (order != null)
             {
                 return new OkObjectResult(order);

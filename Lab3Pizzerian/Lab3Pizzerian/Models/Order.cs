@@ -1,4 +1,5 @@
 ﻿using Lab3Pizzerian.Enumerations;
+using Lab3Pizzerian.Extensions;
 using Lab3Pizzerian.Models;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,6 @@ namespace Lab3Pizzerian
 		public Guid ID { get; set; }
 		public List<Pizza> Pizzas { get; set; }
 		public List<EnumDrink> Drinks { get; set; }
-		public EnumStatus OrderStatus { get; set; }
-		// kanske en klass som heter typ Priser? där vi har några Dictionarys med enums och priser
+		public EnumStatus OrderStatus { get; set; } = EnumStatus.Created;
 	}
 }
