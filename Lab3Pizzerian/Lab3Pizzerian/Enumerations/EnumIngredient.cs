@@ -31,6 +31,12 @@ namespace Lab3Pizzerian.Enumerations
 		[Description("Kebab")]
 		Kebab = 11,
 		[Description("Koriander")]
-		Koriander = 12
+		Koriander = 12,
+		[Description("Feferoni")]
+		Feferoni = 13,
+		[Description("Isbergssallad")]
+		Isbergssallad = 14,
+		[Description("Tomat")]
+		Tomat = 15
 	}
 }
