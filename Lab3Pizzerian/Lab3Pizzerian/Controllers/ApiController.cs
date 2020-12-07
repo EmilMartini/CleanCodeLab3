@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Lab3Pizzerian.Enumerations;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +49,24 @@ namespace Lab3Pizzerian.Controllers
         {
             MockDb instance = MockDb.GetDbInstance();
             var order = instance.GetOrder(orderId);
+            if (order != null)
+            {
+                return new OkObjectResult(order);
+            }
+            else
+            {
+                return new NoContentResult();
+            }
+        }
+
+        [Route("Order/{OrderStatus}")]
+        [HttpGet]
+        public IActionResult GetOrders(string OrderStatus)
+        {
+            MockDb instance = MockDb.GetDbInstance();
+            OrderStatus = OrderStatus.ToLower();
+            OrderStatus = OrderStatus.Substring(0, 1).ToUpper() + OrderStatus.Substring(1, OrderStatus.Length);
+            var order = instance.GetOrders((EnumStatus)Enum.Parse(typeof(EnumStatus), OrderStatus));
             if (order != null)
             {
                 return new OkObjectResult(order);

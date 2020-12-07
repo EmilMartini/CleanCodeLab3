@@ -12,7 +12,7 @@ namespace Lab3Pizzerian
 		public Guid ID { get; set; }
 		public List<Pizza> Pizzas { get; set; }
 		public List<EnumDrink> Drinks { get; set; }
-		public Dictionary<EnumDrink, int> DrinksX { get; set; } // ?? ska nog inte vara här
+		public EnumStatus OrderStatus { get; set; }
 		// kanske en klass som heter typ Priser? där vi har några Dictionarys med enums och priser
 	}
 }
