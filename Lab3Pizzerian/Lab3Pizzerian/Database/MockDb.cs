@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lab3Pizzerian.Enumerations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,8 +10,9 @@ namespace Lab3Pizzerian
     {
         private static MockDb instance = null;
 
-        public Dictionary<Ingredient, int> Ingredients { get; set; }
-        public Dictionary<Drink, int> Drinks { get; set; }
+        public Dictionary<EnumIngredient, int> Ingredients { get; }
+        public Dictionary<EnumDrink, int> Drinks { get; }
+
 
         public static MockDb GetDbInstance()
         {
