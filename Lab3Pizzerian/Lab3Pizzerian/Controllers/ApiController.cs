@@ -21,25 +21,7 @@ namespace Lab3Pizzerian.Controllers
 		//CompleteOrder = 5,
 		//CancelOrder = 6,
 		//ViewOpenOrder = 7,
-		//[SwaggerOperation(Summary = "Creates a new order")]
-		//[Route("Order")]
-		//[HttpPost]
-		//public IActionResult CreateOrder()
-		//{
-		//	MockDb instance = MockDb.GetDbInstance();
-		//	var order = new Order();
-		//	order.ID = Guid.NewGuid();
-		//	var accepted = instance.CreateOrder(order);
-		//	if (accepted)
-		//	{
-		//		return new OkObjectResult($"Order created with OrderId: {order.ID}{Environment.NewLine}" +
-		//			  $"Save this OrderId to add food and drinks to your order.");
-		//	}
-		//	else
-		//	{
-		//		return new ConflictObjectResult($"OrderId: {order.ID} already exists.");
-		//	}
-		//}
+
 
 
 
@@ -84,6 +66,58 @@ namespace Lab3Pizzerian.Controllers
 			return new OkObjectResult($"You have added the pizza {pizzaToAdd.Name} to your order");
 		}
 
+		[SwaggerOperation(Summary = "Add Ingredient to pizza")]
+		[Route("AddIngreditenToPizza2/{PizzaNumber}/{IngredientNumber}")]
+		[HttpPost]
+		public IActionResult AddIngreditenToPizza2(int PizzaNumber, int IngredientNumber)
+		{
+			MockDb instance = MockDb.GetDbInstance();
+			if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.EditPizza) == false)
+			{
+				return new ConflictObjectResult("You cant Edit a pizza now");
+			}
+			var numberOfAddedPizzas = instance.Order.Pizzas.Count();
+			if (numberOfAddedPizzas == 0 || numberOfAddedPizzas < PizzaNumber)
+			{
+				return new ConflictObjectResult("You can only add ingreditents to a pizza you have added");
+			}
+			if (IngredientNumber <= 0 || IngredientNumber > 15)
+			{
+				return new ConflictObjectResult("You can only add ingreditents that exists");
+			}
+			var pizzaToAddIngredientTo = instance.Order.Pizzas[PizzaNumber - 1];
+			pizzaToAddIngredientTo.Extras.Add((EnumIngredient)IngredientNumber);
+			return new OkObjectResult($"You have added {((EnumIngredient)IngredientNumber).Description()} to your {pizzaToAddIngredientTo.Name}");
+		}
+
+		[SwaggerOperation(Summary = "Remove a ingredient you have added to you pizza")]
+		[Route("RemoveAddedIngreditenFromPizza2/{PizzaNumber}/{IngredientNumber}")]
+		[HttpPost]
+		public IActionResult RemoveAddedIngreditenFromPizza2(int PizzaNumber, int IngredientNumber)
+		{
+			MockDb instance = MockDb.GetDbInstance();
+			if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.EditPizza) == false)
+			{
+				return new ConflictObjectResult("You cant Edit a pizza now");
+			}
+			var numberOfAddedPizzas = instance.Order.Pizzas.Count();
+			if (numberOfAddedPizzas == 0 || numberOfAddedPizzas < PizzaNumber)
+			{
+				return new ConflictObjectResult("You can only remove ingreditents to a pizza you have added");
+			}
+			if (IngredientNumber <= 0 || IngredientNumber > 15)
+			{
+				return new ConflictObjectResult("You can only remove ingreditents that exists");
+			}
+			var pizza = instance.Order.Pizzas[PizzaNumber - 1];
+			if (!pizza.Extras.Contains((EnumIngredient)IngredientNumber))
+			{
+				return new ConflictObjectResult("You can only remove ingreditents that exists");
+			}
+			pizza.Extras.Remove((EnumIngredient)IngredientNumber);
+			return new OkObjectResult($"You have Removed {((EnumIngredient)IngredientNumber).Description()} to your {pizza.Name}");
+		}
+
 		[SwaggerOperation(Summary = "Place Order")]
 		[Route("PlaceOrder2")]
 		[HttpPost]
@@ -111,6 +145,39 @@ namespace Lab3Pizzerian.Controllers
 			return new OkObjectResult(instance.Order);
 		}
 
+		[SwaggerOperation(Summary = "Get current pizza menu")]
+		[Route("GetMenuPrototypeTest")]
+		[HttpGet]
+		public IActionResult GetMenuPrototypeTest()
+		{
+			MockDb instance = MockDb.GetDbInstance();
+			var pizzaMenu = instance.GetMenuPrototypeTest();
+			var pizzaMenuModel = new List<PizzaMenuModel>();
+			var standardPizzaForCloneing = pizzaMenu[0]; //testrad
+			var cloneTest = standardPizzaForCloneing.Clone(); //testrad
+			int menuNumber = 1;
+			foreach (var pizza in pizzaMenu)
+			{
+				pizzaMenuModel.Add(
+					 new PizzaMenuModel
+					 {
+						 Number = menuNumber,
+						 Name = pizza.Name,
+						 Ingredients = pizza.Standard.Select(x => x.Description()).ToList(),
+						 Price = pizza.StandardPrice,
+					 }
+					 );
+				menuNumber++;
+			}
+			if (pizzaMenuModel != null)
+			{
+				return new OkObjectResult(pizzaMenuModel);
+			}
+			else
+			{
+				return NoContent();
+			}
+		}
 
 
 
@@ -159,7 +226,25 @@ namespace Lab3Pizzerian.Controllers
 		//		return new NoContentResult();
 		//	}
 		//}
-
+		//[SwaggerOperation(Summary = "Creates a new order")]
+		//[Route("Order")]
+		//[HttpPost]
+		//public IActionResult CreateOrder()
+		//{
+		//	MockDb instance = MockDb.GetDbInstance();
+		//	var order = new Order();
+		//	order.ID = Guid.NewGuid();
+		//	var accepted = instance.CreateOrder(order);
+		//	if (accepted)
+		//	{
+		//		return new OkObjectResult($"Order created with OrderId: {order.ID}{Environment.NewLine}" +
+		//			  $"Save this OrderId to add food and drinks to your order.");
+		//	}
+		//	else
+		//	{
+		//		return new ConflictObjectResult($"OrderId: {order.ID} already exists.");
+		//	}
+		//}
 		//[Route("Orders/{OrderStatus}")]
 		//[HttpGet]
 		//public IActionResult GetOrdersByStatus(string OrderStatus)
@@ -214,38 +299,5 @@ namespace Lab3Pizzerian.Controllers
 		//		return NoContent();
 		//	}
 		//}
-		[SwaggerOperation(Summary = "Get current pizza menu")]
-		[Route("GetMenuPrototypeTest")]
-		[HttpGet]
-		public IActionResult GetMenuPrototypeTest()
-		{
-			MockDb instance = MockDb.GetDbInstance();
-			var pizzaMenu = instance.GetMenuPrototypeTest();
-			var pizzaMenuModel = new List<PizzaMenuModel>();
-			var standardPizzaForCloneing = pizzaMenu[0]; //testrad
-			var cloneTest = standardPizzaForCloneing.Clone(); //testrad
-			int menuNumber = 1;
-			foreach (var pizza in pizzaMenu)
-			{
-				pizzaMenuModel.Add(
-					 new PizzaMenuModel
-					 {
-						 Number = menuNumber,
-						 Name = pizza.Name,
-						 Ingredients = pizza.Standard.Select(x => x.Description()).ToList(),
-						 Price = pizza.StandardPrice,
-					 }
-					 );
-				menuNumber++;
-			}
-			if (pizzaMenuModel != null)
-			{
-				return new OkObjectResult(pizzaMenuModel);
-			}
-			else
-			{
-				return NoContent();
-			}
-		}
 	}
 }
