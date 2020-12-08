@@ -9,9 +9,91 @@ using System.Threading.Tasks;
 
 namespace Lab3Pizzerian
 {
+	public enum EnumApplicationAction
+	{
+		OpenNewOrder = 1,
+		AddPizza = 2,
+		EditPizza = 3, 
+		PlaceOrder = 4,
+		CompleteOrder = 5,
+		CancelOrder = 6,
+		ViewOpenOrder = 7,
+	}
+	//EditSoda
+	
+	//AddPizza
+	//EditPizza         skicka in valdpizza i controllen? kanske inte spelar någon roll om den kan göras i open alltid
+
+	//PlaceOrder        om något finns i kundvagn
+
+	//CompleteOrder
+	//CancelOrder
+	//ViewOpenOrders
+//att i flera steg lägga till och ta bort produkter i en order för att sedan godkänna den.När
+//ordern är lagd så ska det komma tillbaka en lista på ingredienser, alla produkter och totalt
+//pris.Ordern kan därefter väljas att markeras som “färdig” eller “avbruten”. Det ska också gå
+//att få ut en lista på alla orderar som inte är färdiga eller avbrutna ännu.
+
+	public class ApplicationManager
+	{
+		private EnumApplicationState State { get; set; } = EnumApplicationState.Idle;
+
+		public EnumApplicationState GetCurrentState()
+		{
+			return State;
+		}
+		public bool IsActionAllowed(EnumApplicationAction action)
+		{
+			switch (State)
+			{
+				case EnumApplicationState.Idle:
+					if (action == EnumApplicationAction.OpenNewOrder)
+					{
+						State = EnumApplicationState.Open;
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				case EnumApplicationState.Open:
+					if (action == EnumApplicationAction.AddPizza || action == EnumApplicationAction.EditPizza)
+					{
+						return true;
+					}
+					else if (action == EnumApplicationAction.CompleteOrder || action == EnumApplicationAction.PlaceOrder)
+					{
+						State = EnumApplicationState.Closed;
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				case EnumApplicationState.Closed:
+					if (action == EnumApplicationAction.ViewOpenOrder)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				default:
+					return false;
+			}
+		}
+	}
 	public class MockDb
 	{
+		//ny class som håller koll på state
+		// applicationManager
+		// switchsats för applicationStateEnum
+		// Idle
+		// Open lägger till pizzor, editerar
+		// Closed    betalar
 		private static MockDb instance = null;
+		public Order Order { get; set; } = null;
 		public List<Order> Orders { get; set; } = new List<Order>();
 		public readonly List<Pizza> Menu = new List<Pizza>
 		  {
@@ -109,6 +191,7 @@ namespace Lab3Pizzerian
 				{ EnumDrink.Fanta, 20 },
 				{ EnumDrink.Sprite, 25 }
 		  };
+		public ApplicationManager ApplicationManager { get; } = new ApplicationManager();
 
 		public static MockDb GetDbInstance()
 		{
@@ -125,7 +208,26 @@ namespace Lab3Pizzerian
 		}
 
 		//samma för ingredients GetIngredientPrice
-
+		public bool CreateOrder2(Order order)
+		{
+			if (Order != null)
+			{
+				return false;
+			}
+			else
+			{
+				Order = order;
+				return true;
+			}
+		}
+		public bool OpenOrderExist2()
+		{
+			if (Order != null)
+			{
+				return true;
+			}
+			return false;
+		}
 		public bool CreateOrder(Order order)
 		{
 			if (Orders.Any(a => a.ID == order.ID))

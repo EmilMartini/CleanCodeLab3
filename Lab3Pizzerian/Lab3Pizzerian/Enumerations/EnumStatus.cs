@@ -10,8 +10,8 @@ namespace Lab3Pizzerian.Enumerations
 		Done = 1,
 		[Description("Canceled")]
 		Canceled = 2,
-		[Description("Active")]
-		Active = 3,
+		[Description("Placed")]
+		Placed = 3,
 		[Description("Created")]
 		Created = 4
 	}
