@@ -12,7 +12,7 @@ namespace Lab3Pizzerian
 	public class MockDb
 	{
 		private static MockDb instance = null;
-		public Order Order { get; set; } = null;
+		public Order Order { get; set; } = null; // kundvagn
 		public readonly List<StandardPizzaPrototype> Menu = new List<StandardPizzaPrototype>
 		  {
 				{
@@ -52,7 +52,7 @@ namespace Lab3Pizzerian
 				{ EnumDrink.Fanta, 20 },
 				{ EnumDrink.Sprite, 25 }
 		  };
-		public ApplicationManager ApplicationManager { get; } = new ApplicationManager();
+		public ApplicationManager ApplicationManager { get; } = new ApplicationManager(); // inte säker på att detta är rätt
 
 		public static MockDb GetDbInstance()
 		{
@@ -103,7 +103,7 @@ namespace Lab3Pizzerian
 			return totalCost;
 		}
 
-		public bool CreateOrder2(Order order)
+		public bool CreateOrder(Order order)
 		{
 			if (Order != null)
 			{

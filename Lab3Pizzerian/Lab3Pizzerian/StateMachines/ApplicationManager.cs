@@ -28,12 +28,9 @@ namespace Lab3Pizzerian
 	{
 		private EnumApplicationState State { get; set; } = EnumApplicationState.Idle;
 
-		public EnumApplicationState GetCurrentState()
-		{
-			return State;
-		}
 		public bool IsActionAllowed(EnumApplicationAction action)
 		{
+			//TODO ej klar statemachine
 			switch (State)
 			{
 				case EnumApplicationState.Idle:

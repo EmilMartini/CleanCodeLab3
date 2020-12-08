@@ -25,9 +25,11 @@ namespace Lab3Pizzerian.Controllers
 		//CompleteOrder = 5,
 		//CancelOrder = 6,
 		//add/remove dricka
+		//view ingredients som man kan lägga på
+		// bara kunna lägga på saker som kostar
 
 
-		[SwaggerOperation(Summary = "Creates a new order2")]
+		[SwaggerOperation(Summary = "Creates a new order")]
 		[Route("CreateOrder")]
 		[HttpPost]
 		public IActionResult CreateOrder()
@@ -39,7 +41,7 @@ namespace Lab3Pizzerian.Controllers
 			}
 			var order = new Order();
 			order.ID = Guid.NewGuid();
-			var accepted = instance.CreateOrder2(order);
+			var accepted = instance.CreateOrder(order);
 			if (accepted)
 			{
 				return new OkObjectResult($"Order created with OrderId: {order.ID}{Environment.NewLine}");
