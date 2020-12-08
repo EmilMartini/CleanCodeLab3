@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace Lab3Pizzerian
 {
+	//TODO Timestamp för när ordern placeas.
 	public class Order
 	{
 		public int ID { get; set; }

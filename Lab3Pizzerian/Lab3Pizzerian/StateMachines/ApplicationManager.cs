@@ -28,6 +28,8 @@ namespace Lab3Pizzerian
     {
         private EnumApplicationState State { get; set; } = EnumApplicationState.Idle;
 
+        //TODO Lägga till någon action i PlaceOrder som låtsas skickas till ett betalsystem. 
+        //ApplicationState borde  fortfarande läggas som Idle men skjuter man in orderId't på någon payment endpoint ska ordern gå från "PaymentProcessing" till "Placed"
         public bool IsActionAllowed(EnumApplicationAction action)
         {
             switch (State)
