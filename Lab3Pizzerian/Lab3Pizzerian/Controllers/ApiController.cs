@@ -18,11 +18,13 @@ namespace Lab3Pizzerian.Controllers
 		//AddPizza = 2,
 		//EditPizza = 3, 
 		//PlaceOrder = 4,
-		//CompleteOrder = 5,
-		//CancelOrder = 6,
 		//ViewOpenOrder = 7,
 
 
+		// kvar att gära
+		//CompleteOrder = 5,
+		//CancelOrder = 6,
+		//add/remove dricka
 
 
 		[SwaggerOperation(Summary = "Creates a new order2")]
@@ -49,7 +51,7 @@ namespace Lab3Pizzerian.Controllers
 		}
 		[SwaggerOperation(Summary = "Add Pizza to cart")]
 		[Route("AddPizza2/{MenuNumber}")]
-		[HttpPost]
+		[HttpPut]
 		public IActionResult AddPizza2(int MenuNumber)
 		{
 			MockDb instance = MockDb.GetDbInstance();
@@ -68,7 +70,7 @@ namespace Lab3Pizzerian.Controllers
 
 		[SwaggerOperation(Summary = "Add Ingredient to pizza")]
 		[Route("AddIngreditenToPizza2/{PizzaNumber}/{IngredientNumber}")]
-		[HttpPost]
+		[HttpPut]
 		public IActionResult AddIngreditenToPizza2(int PizzaNumber, int IngredientNumber)
 		{
 			MockDb instance = MockDb.GetDbInstance();
@@ -92,7 +94,7 @@ namespace Lab3Pizzerian.Controllers
 
 		[SwaggerOperation(Summary = "Remove a ingredient you have added to you pizza")]
 		[Route("RemoveAddedIngreditenFromPizza2/{PizzaNumber}/{IngredientNumber}")]
-		[HttpPost]
+		[HttpPut]
 		public IActionResult RemoveAddedIngreditenFromPizza2(int PizzaNumber, int IngredientNumber)
 		{
 			MockDb instance = MockDb.GetDbInstance();
@@ -120,7 +122,7 @@ namespace Lab3Pizzerian.Controllers
 
 		[SwaggerOperation(Summary = "Place Order")]
 		[Route("PlaceOrder2")]
-		[HttpPost]
+		[HttpPut]
 		public IActionResult PlaceOrder2()
 		{
 			MockDb instance = MockDb.GetDbInstance();
@@ -141,8 +143,38 @@ namespace Lab3Pizzerian.Controllers
 			{
 				return new ConflictObjectResult("You cant view your order now");
 			}
+			var viewOrderModel = new ViewOrderModel()
+			{
+				Drinks = new List<string>(),
+				Pizzas = new List<PizzaModel>(),
+			};
+
+			foreach (var item in instance.Order.Drinks)
+			{
+				viewOrderModel.Drinks.Add(item.Description());
+			}
+
+			foreach (var pizza in instance.Order.Pizzas)
+			{
+				List<string> extraIngr = new List<string>();
+				foreach (var extraIngredient in pizza.Extras)
+				{
+					extraIngr.Add(extraIngredient.Description());
+				}
+				List<string> standardIngr = new List<string>();
+				foreach (var standardIngredient in pizza.Standard)
+				{
+					standardIngr.Add(standardIngredient.Description());
+				}
+				viewOrderModel.Pizzas.Add(new PizzaModel()
+				{
+					Name = pizza.Name,
+					Ingredients = standardIngr,
+					Extras = extraIngr,
+				});
+			}
 			instance.Order.OrderStatus = EnumStatus.Placed;
-			return new OkObjectResult(instance.Order);
+			return new OkObjectResult(viewOrderModel);
 		}
 
 		[SwaggerOperation(Summary = "Get current pizza menu")]

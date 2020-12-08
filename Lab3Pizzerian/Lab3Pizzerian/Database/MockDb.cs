@@ -86,12 +86,6 @@ namespace Lab3Pizzerian
 	}
 	public class MockDb
 	{
-		//ny class som håller koll på state
-		// applicationManager
-		// switchsats för applicationStateEnum
-		// Idle
-		// Open lägger till pizzor, editerar
-		// Closed    betalar
 		private static MockDb instance = null;
 		public Order Order { get; set; } = null;
 		public List<Order> Orders { get; set; } = new List<Order>();
