@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lab3Pizzerian.Models
 {
-	public class PizzaModel
+	public class PizzaDisplayModel
 	{
 		public string Name { get; set; }
 		public List<string> Ingredients { get; set; }

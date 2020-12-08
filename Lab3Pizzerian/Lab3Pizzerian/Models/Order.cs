@@ -14,7 +14,7 @@ namespace Lab3Pizzerian
 	{
 		public Guid ID { get; set; }
 		[JsonConverter(typeof(StringEnumConverter))]
-		public List<Pizza2> Pizzas { get; set; } = new List<Pizza2>();
+		public List<Pizza> Pizzas { get; set; } = new List<Pizza>();
 		[JsonConverter(typeof(StringEnumConverter))]
 		public List<EnumDrink> Drinks { get; set; } = new List<EnumDrink>();
 		[JsonConverter(typeof(StringEnumConverter))]

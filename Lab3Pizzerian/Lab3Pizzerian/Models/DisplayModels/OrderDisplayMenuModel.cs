@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Lab3Pizzerian.Models
 {
-    public class OrderMenuModel
+    public class OrderDisplayMenuModel
     {
         public string ID { get; set; }
         public List<string> Food { get; set; }

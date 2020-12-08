@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Lab3Pizzerian.Models
 {
-	public class ViewOrderModel
+	public class OrderDisplayModel
 	{
-		public List<PizzaModel> Pizzas { get; set; }
+		public List<PizzaDisplayModel> Pizzas { get; set; }
 		public List<string> Drinks { get; set; }
 		public int TotalPrice { get; set; }
 	}

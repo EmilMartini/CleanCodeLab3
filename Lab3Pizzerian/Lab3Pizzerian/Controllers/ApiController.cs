@@ -28,9 +28,9 @@ namespace Lab3Pizzerian.Controllers
 
 
 		[SwaggerOperation(Summary = "Creates a new order2")]
-		[Route("Order2")]
+		[Route("CreateOrder")]
 		[HttpPost]
-		public IActionResult CreateOrder2()
+		public IActionResult CreateOrder()
 		{
 			MockDb instance = MockDb.GetDbInstance();
 			if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.OpenNewOrder) == false)
@@ -49,29 +49,30 @@ namespace Lab3Pizzerian.Controllers
 				return new ConflictObjectResult($"OrderId: {order.ID} already exists.");
 			}
 		}
+
 		[SwaggerOperation(Summary = "Add Pizza to cart")]
-		[Route("AddPizza2/{MenuNumber}")]
+		[Route("AddPizza/{MenuNumber}")]
 		[HttpPut]
-		public IActionResult AddPizza2(int MenuNumber)
+		public IActionResult AddPizza(int MenuNumber)
 		{
 			MockDb instance = MockDb.GetDbInstance();
 			if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.AddPizza) == false)
 			{
 				return new ConflictObjectResult("You cant add a pizza now");
 			}
-			if (instance.Menu2.Count() < MenuNumber || 0 >= MenuNumber)
+			if (instance.Menu.Count() < MenuNumber || 0 >= MenuNumber)
 			{
 				return new ConflictObjectResult("Thats not on the menu");
 			}
-			var pizzaToAdd = instance.Menu2[MenuNumber - 1].Clone();
-			instance.Order.Pizzas.Add((Pizza2)pizzaToAdd);
+			var pizzaToAdd = instance.Menu[MenuNumber - 1].Clone();
+			instance.Order.Pizzas.Add((Pizza)pizzaToAdd);
 			return new OkObjectResult($"You have added the pizza {pizzaToAdd.Name} to your order");
 		}
 
 		[SwaggerOperation(Summary = "Add Ingredient to pizza")]
-		[Route("AddIngreditenToPizza2/{PizzaNumber}/{IngredientNumber}")]
+		[Route("AddIngreditenToPizza/{PizzaNumber}/{IngredientNumber}")]
 		[HttpPut]
-		public IActionResult AddIngreditenToPizza2(int PizzaNumber, int IngredientNumber)
+		public IActionResult AddIngreditenToPizza(int PizzaNumber, int IngredientNumber)
 		{
 			MockDb instance = MockDb.GetDbInstance();
 			if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.EditPizza) == false)
@@ -93,9 +94,9 @@ namespace Lab3Pizzerian.Controllers
 		}
 
 		[SwaggerOperation(Summary = "Remove a ingredient you have added to you pizza")]
-		[Route("RemoveAddedIngreditenFromPizza2/{PizzaNumber}/{IngredientNumber}")]
+		[Route("RemoveAddedIngreditenFromPizza/{PizzaNumber}/{IngredientNumber}")]
 		[HttpPut]
-		public IActionResult RemoveAddedIngreditenFromPizza2(int PizzaNumber, int IngredientNumber)
+		public IActionResult RemoveAddedIngreditenFromPizza(int PizzaNumber, int IngredientNumber)
 		{
 			MockDb instance = MockDb.GetDbInstance();
 			if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.EditPizza) == false)
@@ -121,9 +122,9 @@ namespace Lab3Pizzerian.Controllers
 		}
 
 		[SwaggerOperation(Summary = "Place Order")]
-		[Route("PlaceOrder2")]
+		[Route("PlaceOrder")]
 		[HttpPut]
-		public IActionResult PlaceOrder2()
+		public IActionResult PlaceOrder()
 		{
 			MockDb instance = MockDb.GetDbInstance();
 			if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.PlaceOrder) == false)
@@ -133,6 +134,7 @@ namespace Lab3Pizzerian.Controllers
 			instance.Order.OrderStatus = EnumStatus.Placed;
 			return new OkObjectResult($"You have placed your order");
 		}
+
 		[SwaggerOperation(Summary = "View your current order")]
 		[Route("ViewOrder")]
 		[HttpGet]
@@ -143,10 +145,10 @@ namespace Lab3Pizzerian.Controllers
 			{
 				return new ConflictObjectResult("You cant view your order now");
 			}
-			var viewOrderModel = new ViewOrderModel()
+			var viewOrderModel = new OrderDisplayModel()
 			{
 				Drinks = new List<string>(),
-				Pizzas = new List<PizzaModel>(),
+				Pizzas = new List<PizzaDisplayModel>(),
 				TotalPrice = instance.GetOrderTotalCost(),
 			};
 
@@ -167,7 +169,7 @@ namespace Lab3Pizzerian.Controllers
 				{
 					standardIngr.Add(standardIngredient.Description());
 				}
-				viewOrderModel.Pizzas.Add(new PizzaModel()
+				viewOrderModel.Pizzas.Add(new PizzaDisplayModel()
 				{
 					Name = pizza.Name,
 					Ingredients = standardIngr,
@@ -181,20 +183,18 @@ namespace Lab3Pizzerian.Controllers
 		}
 
 		[SwaggerOperation(Summary = "Get current pizza menu")]
-		[Route("GetMenuPrototypeTest")]
+		[Route("GetMenu")]
 		[HttpGet]
-		public IActionResult GetMenuPrototypeTest()
+		public IActionResult GetMenu()
 		{
 			MockDb instance = MockDb.GetDbInstance();
-			var pizzaMenu = instance.GetMenuPrototypeTest();
-			var pizzaMenuModel = new List<PizzaMenuModel>();
-			var standardPizzaForCloneing = pizzaMenu[0]; //testrad
-			var cloneTest = standardPizzaForCloneing.Clone(); //testrad
+			var pizzaMenu = instance.GetMenu();
+			var pizzaMenuModel = new List<PizzaDisplayMenuModel>();
 			int menuNumber = 1;
 			foreach (var pizza in pizzaMenu)
 			{
 				pizzaMenuModel.Add(
-					 new PizzaMenuModel
+					 new PizzaDisplayMenuModel
 					 {
 						 Number = menuNumber,
 						 Name = pizza.Name,

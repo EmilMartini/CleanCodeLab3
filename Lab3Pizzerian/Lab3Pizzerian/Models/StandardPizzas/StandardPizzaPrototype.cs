@@ -8,11 +8,8 @@ using System.Threading.Tasks;
 
 namespace Lab3Pizzerian.Models
 {
-	public class Pizza
+	public abstract class StandardPizzaPrototype : Pizza
 	{
-		public string Name { get; set; }
-		public List<EnumIngredient> Standard { get; set; }
-		public int StandardPrice { get; set; }
-		public List<EnumIngredient> Extras { get; set; }
+		public abstract StandardPizzaPrototype Clone();
 	}
 }
