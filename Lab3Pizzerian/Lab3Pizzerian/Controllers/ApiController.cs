@@ -128,5 +128,35 @@ namespace Lab3Pizzerian.Controllers
                 return NoContent();
             }
         }
-    }
+      [SwaggerOperation(Summary = "Get current pizza menu Daniel test prototype")]
+      [Route("GetMenuPrototypeTest")]
+      [HttpGet]
+      public IActionResult GetMenuPrototypeTest()
+      {
+         MockDb instance = MockDb.GetDbInstance();
+         var pizzaMenu = instance.GetMenuPrototypeTest();
+         var pizzaMenuModel = new List<PizzaMenuModel>();
+         var standardPizzaForCloneing = pizzaMenu[0]; //testrad
+         var cloneTest = standardPizzaForCloneing.Clone(); //testrad
+         foreach (var pizza in pizzaMenu)
+         {
+            pizzaMenuModel.Add(
+                new PizzaMenuModel
+                {
+                   Name = pizza.Name,
+                   Ingredients = pizza.Standard.Select(x => x.Description()).ToList(),
+                   Price = pizza.StandardPrice,
+                }
+                );
+         }
+         if (pizzaMenuModel != null)
+         {
+            return new OkObjectResult(pizzaMenuModel);
+         }
+         else
+         {
+            return NoContent();
+         }
+      }
+   }
 }
