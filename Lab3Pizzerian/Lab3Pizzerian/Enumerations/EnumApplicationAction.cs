@@ -13,6 +13,7 @@ namespace Lab3Pizzerian.Enumerations
 		PlaceOrder = 4,
 		CompleteOrder = 5,
 		CancelOrder = 6,
-		ViewOpenOrder = 7,
-	}
+		ViewCart = 7,
+        GetPlacedOrders = 8,
+    }
 }

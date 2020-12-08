@@ -8,8 +8,9 @@ namespace Lab3Pizzerian.Models
 {
 	public class OrderDisplayModel
 	{
-		public List<PizzaDisplayModel> Pizzas { get; set; }
-		public List<string> Drinks { get; set; }
+		public string OrderId { get; set; }
+		public List<PizzaDisplayModel> Pizzas { get; set; } = new List<PizzaDisplayModel>();
+		public List<string> Drinks { get; set; } = new List<string>();
 		public int TotalPrice { get; set; }
 	}
 }

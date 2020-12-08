@@ -10,9 +10,9 @@ namespace Lab3Pizzerian.Enumerations
 	{
 		[Description("Application Idle")]
 		Idle = 1,
-		[Description("Application Open")]
-		Open = 2,
-		[Description("Application Closed")]
-		Closed = 3
+		[Description("Application Cart Open")]
+		CartOpen = 2,
+		[Description("Application Cart Closed")]
+		CartClosed = 3
 	}
 }

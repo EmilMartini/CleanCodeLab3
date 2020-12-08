@@ -1,18 +1,16 @@
 ﻿using Lab3Pizzerian.Enumerations;
-using Lab3Pizzerian.Extensions;
 using Lab3Pizzerian.Models;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lab3Pizzerian
 {
 	public class MockDb
 	{
 		private static MockDb instance = null;
-		public Order Order { get; set; } = null; // kundvagn
+		public Order Cart { get; set; } = null;
+		private List<Order> Orders { get; set; } = new List<Order>();
 		public readonly List<StandardPizzaPrototype> Menu = new List<StandardPizzaPrototype>
 		  {
 				{
@@ -83,15 +81,15 @@ namespace Lab3Pizzerian
 			return totalPrice;
 		}
 
-		public int GetOrderTotalCost()
+		public int GetCartTotalCost()
 		{
 			int totalCost = 0;
 
-			foreach (var drink in Order.Drinks)
+			foreach (var drink in Cart.Drinks)
 			{
 				totalCost += GetDrinkPrice(drink);
 			}
-			foreach (var pizza in Order.Pizzas)
+			foreach (var pizza in Cart.Pizzas)
 			{
 				totalCost += pizza.StandardPrice;
 				foreach (var extraIngredient in pizza.Extras)
@@ -103,22 +101,70 @@ namespace Lab3Pizzerian
 			return totalCost;
 		}
 
+		public int GetOrderTotalCost(Order order)
+        {
+			int totalCost = 0;
+			foreach (var drink in order.Drinks)
+			{
+				totalCost += GetDrinkPrice(drink);
+			}
+			foreach (var pizza in order.Pizzas)
+			{
+				totalCost += pizza.StandardPrice;
+				foreach (var extraIngredient in pizza.Extras)
+				{
+					totalCost += GetIngredientPrice(extraIngredient);
+				}
+			}
+			return totalCost;
+		}
+
 		public bool CreateOrder(Order order)
 		{
-			if (Order != null)
+			if (Cart != null)
 			{
 				return false;
 			}
 			else
 			{
-				Order = order;
+				Cart = order;
 				return true;
 			}
 		}
+
+		public bool CompleteOrder(int OrderId)
+        {
+			Orders.Where(i => i.ID == OrderId).Select(i => i.OrderStatus = EnumStatus.Done).ToList();
+			return true;
+        }
+
+		public List<Order> GetPlacedOrders()
+        {
+			return Orders.Where(i => i.OrderStatus == EnumStatus.Placed).ToList();
+        }
+
+		public int GetNextOrderId()
+        {
+			return Orders.Count() + 1;
+        }
+        public Order PlaceOrder()
+        {
+			Cart.OrderStatus = EnumStatus.Placed;
+			Orders.Add(Cart);
+			var tempCart = Cart;
+			Cart = null;
+			return tempCart;
+        }
 
 		public List<StandardPizzaPrototype> GetMenu()
 		{
 			return Menu;
 		}
-	}
+
+        public bool CancelOrder(int OrderId)
+        {
+			Orders.Where(i => i.ID == OrderId).Select(i => i.OrderStatus = EnumStatus.Canceled).ToList();
+			return true;
+		}
+    }
 }
