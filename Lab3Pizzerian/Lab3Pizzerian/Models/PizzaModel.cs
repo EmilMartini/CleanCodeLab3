@@ -11,6 +11,7 @@ namespace Lab3Pizzerian.Models
 		public string Name { get; set; }
 		public List<string> Ingredients { get; set; }
 		public List<string> Extras { get; set; }
-		public int Price { get; set; }
+		public int StandardPrice { get; set; }
+		public int ExtrasPrice { get; set; }
 	}
 }

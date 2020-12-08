@@ -10,6 +10,6 @@ namespace Lab3Pizzerian.Models
 	{
 		public List<PizzaModel> Pizzas { get; set; }
 		public List<string> Drinks { get; set; }
-		public int Price { get; set; }
+		public int TotalPrice { get; set; }
 	}
 }

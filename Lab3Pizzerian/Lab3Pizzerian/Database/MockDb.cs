@@ -201,7 +201,41 @@ namespace Lab3Pizzerian
 			return Drinks.Where(x => x.Key == drink).FirstOrDefault().Value;
 		}
 
-		//samma för ingredients GetIngredientPrice
+		public int GetIngredientPrice(EnumIngredient ingredient)
+		{
+			return Ingredients.Where(x => x.Key == ingredient).FirstOrDefault().Value;
+		}
+
+		public int GetIngredientListPrice(List<EnumIngredient> ingredients)
+		{
+			int totalPrice = 0;
+			foreach (var ingredient in ingredients)
+			{
+				totalPrice += Ingredients.Where(x => x.Key == ingredient).FirstOrDefault().Value;
+			}
+			return totalPrice;
+		}
+
+		public int GetOrderTotalCost()
+		{
+			int totalCost = 0;
+
+			foreach (var drink in Order.Drinks)
+			{
+				totalCost += GetDrinkPrice(drink);
+			}
+			foreach (var pizza in Order.Pizzas)
+			{
+				totalCost += pizza.StandardPrice;
+				foreach (var extraIngredient in pizza.Extras)
+				{
+					totalCost += GetIngredientPrice(extraIngredient);
+				}
+			}
+
+			return totalCost;
+		}
+
 		public bool CreateOrder2(Order order)
 		{
 			if (Order != null)

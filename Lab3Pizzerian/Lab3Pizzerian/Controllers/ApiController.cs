@@ -147,6 +147,7 @@ namespace Lab3Pizzerian.Controllers
 			{
 				Drinks = new List<string>(),
 				Pizzas = new List<PizzaModel>(),
+				TotalPrice = instance.GetOrderTotalCost(),
 			};
 
 			foreach (var item in instance.Order.Drinks)
@@ -171,7 +172,9 @@ namespace Lab3Pizzerian.Controllers
 					Name = pizza.Name,
 					Ingredients = standardIngr,
 					Extras = extraIngr,
-				});
+					StandardPrice = pizza.StandardPrice,
+					ExtrasPrice = instance.GetIngredientListPrice(pizza.Extras),
+				}) ;
 			}
 			instance.Order.OrderStatus = EnumStatus.Placed;
 			return new OkObjectResult(viewOrderModel);
