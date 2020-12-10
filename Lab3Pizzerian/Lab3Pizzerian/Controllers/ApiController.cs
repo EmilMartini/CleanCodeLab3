@@ -88,7 +88,7 @@ namespace Lab3Pizzerian.Controllers
             Application instance = Application.GetApplicationInstance();
             if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.AddPizza) == false)
             {
-                return new ConflictObjectResult("You cant add a pizza now");
+                return new ConflictObjectResult("You cant add a drink now");
             }
 
             if (instance.Drinks.Count() < MenuNumber || 0 >= MenuNumber)
@@ -97,7 +97,7 @@ namespace Lab3Pizzerian.Controllers
             }
             var drinkToAdd = instance.Drinks.ElementAt(MenuNumber - 1).Key;
             instance.Cart.Drinks.Add(drinkToAdd);
-            return new OkObjectResult($"You have added the {drinkToAdd.ToString()} to your order");
+            return new OkObjectResult($"You have added the {drinkToAdd.Description()} to your order");
         }
 
         [SwaggerOperation(Summary = "Remove Drink from cart")]
@@ -108,7 +108,7 @@ namespace Lab3Pizzerian.Controllers
             Application instance = Application.GetApplicationInstance();
             if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.AddPizza) == false)
             {
-                return new ConflictObjectResult("You cant add a pizza now");
+                return new ConflictObjectResult("You cant remove drinks now");
             }
 
             if(instance.Cart.Drinks.Count <= 0)
@@ -297,7 +297,7 @@ namespace Lab3Pizzerian.Controllers
             Application instance = Application.GetApplicationInstance();
             if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.CancelOrder) == false)
             {
-                return new ConflictObjectResult("You cant Edit a pizza now");
+                return new ConflictObjectResult("You cant cancel order now");
             }
 
             var accepted = instance.CancelOrder(OrderId);
@@ -403,10 +403,10 @@ namespace Lab3Pizzerian.Controllers
         public IActionResult GetDrinks()
         {
             Application instance = Application.GetApplicationInstance();
-            var drink = instance.Drinks.Select(i => new { Ingredient = (i.Key.Description()), Price = i.Value }).ToList();
-            if (drink.Any())
+            var drinks = instance.Drinks.Select(i => new { Ingredient = (i.Key.Description()), Price = i.Value }).ToList();
+            if (drinks.Any())
             {
-                return new OkObjectResult(drink);
+                return new OkObjectResult(drinks);
             }
             else
             {
