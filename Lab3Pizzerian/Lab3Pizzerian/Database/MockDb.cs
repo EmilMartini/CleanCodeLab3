@@ -149,6 +149,11 @@ namespace Lab3Pizzerian
         }
         public Order PlaceOrder()
         {
+			if(Cart.Pizzas.Count <= 0 && Cart.Drinks.Count <= 0)
+            {
+				return null;
+            }
+
 			Cart.OrderStatus = EnumStatus.Processing;
 			Orders.Add(Cart);
 			var tempCart = Cart;
@@ -178,6 +183,12 @@ namespace Lab3Pizzerian
             {
 				return false;
             }
+        }
+
+        public bool CancelCart()
+        {
+			Cart = null;
+			return (Cart == null);
         }
     }
 }

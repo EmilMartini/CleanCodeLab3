@@ -13,14 +13,14 @@ namespace Lab3Pizzerian.Controllers
     [Route("Api")]
     public class ApiController : Controller
     {
-        //BIG TODO: GÖRA ALLT REST-ful
+        //BIG TODO: GÖRA ALLT REST-ful Pågående / Nästan klart TROR JAG
 
         //add/remove dricka
         //view ingredients som man kan lägga på
-        // bara kunna lägga på saker som kostar
+        //bara kunna lägga på saker som kostar
 
         [SwaggerOperation(Summary = "Creates a new order")]
-        [Route("CreateOrder")]
+        [Route("Cart")]
         [HttpPost]
         public IActionResult CreateOrder()
         {
@@ -34,6 +34,7 @@ namespace Lab3Pizzerian.Controllers
             var accepted = instance.CreateOrder(order);
             if (accepted)
             {
+                instance.ApplicationManager.SetState(EnumApplicationAction.OpenNewOrder);
                 return new OkObjectResult($"Order created with OrderId: {order.ID}{Environment.NewLine}");
             }
             else
@@ -42,8 +43,32 @@ namespace Lab3Pizzerian.Controllers
             }
         }
 
+        [SwaggerOperation(Summary = "Empties the current cart")]
+        [Route("Cart")]
+        [HttpDelete]
+        public IActionResult EmptyCart()
+        {
+            MockDb instance = MockDb.GetDbInstance();
+            if (!instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.CancelCart))
+            {
+                return new ConflictObjectResult("You cannot empty current cart right now.");
+            }
+
+            var success = instance.CancelCart();
+
+            if (success)
+            {
+                instance.ApplicationManager.SetState(EnumApplicationAction.CancelCart);
+                return new OkObjectResult("Successfully emptied current cart");
+            }
+            else
+            {
+                return new BadRequestObjectResult("Something went wrong. Couldn't empty current cart");
+            }
+        }
+
         [SwaggerOperation(Summary = "Add Pizza to cart")]
-        [Route("AddPizza/{MenuNumber}")]
+        [Route("Cart/{MenuNumber}")]
         [HttpPut]
         public IActionResult AddPizza(int MenuNumber)
         {
@@ -62,7 +87,7 @@ namespace Lab3Pizzerian.Controllers
         }
 
         [SwaggerOperation(Summary = "Add Ingredient to pizza")]
-        [Route("AddIngreditenToPizza/{PizzaNumber}/{IngredientNumber}")]
+        [Route("Cart/{PizzaNumber}/{IngredientNumber}")]
         [HttpPut]
         public IActionResult AddIngreditenToPizza(int PizzaNumber, int IngredientNumber)
         {
@@ -86,8 +111,8 @@ namespace Lab3Pizzerian.Controllers
         }
 
         [SwaggerOperation(Summary = "Remove a ingredient you have added to you pizza")]
-        [Route("RemoveAddedIngreditenFromPizza/{PizzaNumber}/{IngredientNumber}")]
-        [HttpPut]
+        [Route("Cart/{PizzaNumber}/{IngredientNumber}")]
+        [HttpDelete]
         public IActionResult RemoveAddedIngreditenFromPizza(int PizzaNumber, int IngredientNumber)
         {
             MockDb instance = MockDb.GetDbInstance();
@@ -113,42 +138,8 @@ namespace Lab3Pizzerian.Controllers
             return new OkObjectResult($"You have Removed {((EnumIngredient)IngredientNumber).Description()} to your {pizza.Name}");
         }
 
-        [SwaggerOperation(Summary = "Place Order")]
-        [Route("PlaceOrder")]
-        [HttpPut]
-        public IActionResult PlaceOrder()
-        {
-            MockDb instance = MockDb.GetDbInstance();
-            if (!instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.PlaceOrder))
-            {
-                return new ConflictObjectResult("You cant place your order now");
-            }
-            var order = instance.PlaceOrder();
-
-            var orderMenuModel = new OrderDisplayModel()
-            {
-                OrderId = order.ID.ToString(),
-                Drinks = order.Drinks.Select(i => i.Description()).ToList(),
-                TotalPrice = instance.GetOrderTotalCost(order)
-            };
-
-            foreach (var pizza in order.Pizzas)
-            {
-                orderMenuModel.Pizzas.Add(new PizzaDisplayModel()
-                {
-                    Name = pizza.Name,
-                    Extras = pizza.Extras.Select(i => i.Description()).ToList(),
-                    Ingredients = pizza.Standard.Select(i => i.Description()).ToList(),
-                    StandardPrice = pizza.StandardPrice,
-                    ExtrasPrice = instance.GetIngredientListPrice(pizza.Extras)
-                });
-            }
-
-            return new OkObjectResult(orderMenuModel);
-        }
-
         [SwaggerOperation(Summary = "View the current cart")]
-        [Route("ViewCart")]
+        [Route("Cart")]
         [HttpGet]
         public IActionResult ViewCart()
         {
@@ -194,40 +185,48 @@ namespace Lab3Pizzerian.Controllers
             return new OkObjectResult(viewOrderModel);
         }
 
-        [SwaggerOperation(Summary = "Get current pizza menu")]
-        [Route("GetMenu")]
-        [HttpGet]
-        public IActionResult GetMenu()
+        [SwaggerOperation(Summary = "Place Order")]
+        [Route("Order")]
+        [HttpPost]
+        public IActionResult PlaceOrder()
         {
             MockDb instance = MockDb.GetDbInstance();
-            var pizzaMenu = instance.GetMenu();
-            var pizzaMenuModel = new List<PizzaDisplayMenuModel>();
-            int menuNumber = 1;
-            foreach (var pizza in pizzaMenu)
+            if (!instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.PlaceOrder))
             {
-                pizzaMenuModel.Add(
-                     new PizzaDisplayMenuModel
-                     {
-                         Number = menuNumber,
-                         Name = pizza.Name,
-                         Ingredients = pizza.Standard.Select(x => x.Description()).ToList(),
-                         Price = pizza.StandardPrice,
-                     }
-                     );
-                menuNumber++;
+                return new ConflictObjectResult("You cant place your order now");
             }
-            if (pizzaMenuModel != null)
+            var order = instance.PlaceOrder();
+            if(order == null)
             {
-                return new OkObjectResult(pizzaMenuModel);
+                return new BadRequestObjectResult("Cannot place an empty order.");
             }
-            else
-            {
-                return NoContent();
-            }
-        }
 
+
+            var orderMenuModel = new OrderDisplayModel()
+            {
+                OrderId = order.ID.ToString(),
+                Drinks = order.Drinks.Select(i => i.Description()).ToList(),
+                TotalPrice = instance.GetOrderTotalCost(order)
+            };
+
+            foreach (var pizza in order.Pizzas)
+            {
+                orderMenuModel.Pizzas.Add(new PizzaDisplayModel()
+                {
+                    Name = pizza.Name,
+                    Extras = pizza.Extras.Select(i => i.Description()).ToList(),
+                    Ingredients = pizza.Standard.Select(i => i.Description()).ToList(),
+                    StandardPrice = pizza.StandardPrice,
+                    ExtrasPrice = instance.GetIngredientListPrice(pizza.Extras)
+                });
+            }
+
+            instance.ApplicationManager.SetState(EnumApplicationAction.PlaceOrder);
+            return new OkObjectResult(orderMenuModel);
+        }
+            
         [SwaggerOperation(Summary = "Completes an order")]
-        [Route("CompleteOrder/{OrderId:int}")]
+        [Route("Order/{OrderId:int}")]
         [HttpPost]
         public IActionResult CompleteOrder(int OrderId)
         {
@@ -249,8 +248,8 @@ namespace Lab3Pizzerian.Controllers
         }
 
         [SwaggerOperation(Summary = "Cancels an order")]
-        [Route("CancelOrder/{OrderId:int}")]
-        [HttpPut]
+        [Route("Order/{OrderId:int}")]
+        [HttpDelete]
         public IActionResult CancelOrder(int OrderId)
         {
             MockDb instance = MockDb.GetDbInstance();
@@ -272,7 +271,7 @@ namespace Lab3Pizzerian.Controllers
         }
 
         [SwaggerOperation(Summary = "Get placed orders")]
-        [Route("PlacedOrders")]
+        [Route("Order")]
         [HttpGet]
         public IActionResult GetPlacedOrders()
         {
@@ -307,7 +306,39 @@ namespace Lab3Pizzerian.Controllers
             return new OkObjectResult(jsonOrders);
         }
 
-        [SwaggerOperation(Summary = "Complete ")]
+        [SwaggerOperation(Summary = "Get current pizza menu")]
+        [Route("Menu")]
+        [HttpGet]
+        public IActionResult GetMenu()
+        {
+            MockDb instance = MockDb.GetDbInstance();
+            var pizzaMenu = instance.GetMenu();
+            var pizzaMenuModel = new List<PizzaDisplayMenuModel>();
+            int menuNumber = 1;
+            foreach (var pizza in pizzaMenu)
+            {
+                pizzaMenuModel.Add(
+                     new PizzaDisplayMenuModel
+                     {
+                         Number = menuNumber,
+                         Name = pizza.Name,
+                         Ingredients = pizza.Standard.Select(x => x.Description()).ToList(),
+                         Price = pizza.StandardPrice,
+                     }
+                     );
+                menuNumber++;
+            }
+            if (pizzaMenuModel != null)
+            {
+                return new OkObjectResult(pizzaMenuModel);
+            }
+            else
+            {
+                return NoContent();
+            }
+        }
+
+        [SwaggerOperation(Summary = "Complete payment for an order")]
         [Route("Payment/{OrderId:int}")]
         [HttpPost]
         public IActionResult CompletePayment(int OrderId)
@@ -327,120 +358,7 @@ namespace Lab3Pizzerian.Controllers
                 return new BadRequestObjectResult("Something went wrong. Couldn't complete payment for order: " + OrderId);
             }
         }
-        // tror detta är fel. efter att ha läst documentationen tror jag att vi ska visa alla som INTE är i orderslistan (känns helknäppt)
-        //[Route("Orders")]
-        //[HttpGet]
-        //public IActionResult GetOrders()
-        //{
-        //	MockDb instance = MockDb.GetDbInstance();
-        //	var orders = instance.GetOrders();
-        //	if (orders != null)
-        //	{
-        //		var orderMenuModel = new List<OrderMenuModel>();
-        //		foreach (var order in orders)
-        //		{
-        //			orderMenuModel.Add(new OrderMenuModel
-        //			{
-        //				ID = order.ID.ToString(),
-        //				Food = order.Pizzas.Select(i => i.Name).ToList(),
-        //				OrderStatus = order.OrderStatus.Description()
-        //			});
-        //		}
-        //		return new OkObjectResult(orderMenuModel);
-        //	}
-        //	else
-        //	{
-        //		return new NoContentResult();
-        //	}
-        //}
 
-        //[Route("Order/{OrderId}")]
-        //[HttpGet]
-        //public IActionResult GetOrder(string OrderId)
-        //{
-        //	MockDb instance = MockDb.GetDbInstance();
-        //	var order = instance.GetOrder(OrderId);
-        //	if (order != null)
-        //	{
-        //		return new OkObjectResult(order);
-        //	}
-        //	else
-        //	{
-        //		return new NoContentResult();
-        //	}
-        //}
-        //[SwaggerOperation(Summary = "Creates a new order")]
-        //[Route("Order")]
-        //[HttpPost]
-        //public IActionResult CreateOrder()
-        //{
-        //	MockDb instance = MockDb.GetDbInstance();
-        //	var order = new Order();
-        //	order.ID = Guid.NewGuid();
-        //	var accepted = instance.CreateOrder(order);
-        //	if (accepted)
-        //	{
-        //		return new OkObjectResult($"Order created with OrderId: {order.ID}{Environment.NewLine}" +
-        //			  $"Save this OrderId to add food and drinks to your order.");
-        //	}
-        //	else
-        //	{
-        //		return new ConflictObjectResult($"OrderId: {order.ID} already exists.");
-        //	}
-        //}
-        //[Route("Orders/{OrderStatus}")]
-        //[HttpGet]
-        //public IActionResult GetOrdersByStatus(string OrderStatus)
-        //{
-        //	MockDb instance = MockDb.GetDbInstance();
-        //	var orders = instance.GetOrders((EnumStatus)Enum.Parse(typeof(EnumStatus), OrderStatus));
-        //	if (orders != null)
-        //	{
-        //		var orderMenuModel = new List<OrderMenuModel>();
-        //		foreach (var order in orders)
-        //		{
-        //			orderMenuModel.Add(new OrderMenuModel
-        //			{
-        //				ID = order.ID.ToString(),
-        //				Food = order.Pizzas.Select(i => i.Name).ToList(),
-        //				OrderStatus = order.OrderStatus.Description()
-        //			});
-        //		}
-        //		return new OkObjectResult(orderMenuModel);
-        //	}
-        //	else
-        //	{
-        //		return new NoContentResult();
-        //	}
-        //}
-
-        //[SwaggerOperation(Summary = "Get current pizza menu")]
-        //[Route("Menu")]
-        //[HttpGet]
-        //public IActionResult GetMenu()
-        //{
-        //	MockDb instance = MockDb.GetDbInstance();
-        //	var pizzaMenu = instance.GetMenu();
-        //	var pizzaMenuModel = new List<PizzaMenuModel>();
-        //	foreach (var pizza in pizzaMenu)
-        //	{
-        //		pizzaMenuModel.Add(
-        //			 new PizzaMenuModel
-        //			 {
-        //				 Name = pizza.Name,
-        //				 Ingredients = pizza.Standard.Select(x => x.Description()).ToList(),
-        //				 Price = pizza.StandardPrice,
-        //			 }
-        //			 );
-        //	}
-        //	if (pizzaMenuModel != null)
-        //	{
-        //		return new OkObjectResult(pizzaMenuModel);
-        //	}
-        //	else
-        //	{
-        //		return NoContent();
-        //	}
-        //}
+        
     }
 }
