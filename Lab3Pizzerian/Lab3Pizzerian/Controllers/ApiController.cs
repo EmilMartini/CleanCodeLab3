@@ -397,6 +397,24 @@ namespace Lab3Pizzerian.Controllers
             
         }
 
+        [SwaggerOperation(Summary = "Get available drinks")]
+        [Route("Menu/Drinks")]
+        [HttpGet]
+        public IActionResult GetDrinks()
+        {
+            Application instance = Application.GetApplicationInstance();
+            var drink = instance.Drinks.Select(i => new { Ingredient = (i.Key.Description()), Price = i.Value }).ToList();
+            if (drink.Any())
+            {
+                return new OkObjectResult(drink);
+            }
+            else
+            {
+                return new NoContentResult();
+            }
+
+        }
+
         [SwaggerOperation(Summary = "Complete payment for an order")]
         [Route("Payment/{OrderId:int}")]
         [HttpPost]
