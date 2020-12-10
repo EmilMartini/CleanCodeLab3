@@ -2,9 +2,6 @@
 
 namespace Lab3Pizzerian
 {
-    //EditSoda
-
-    //AddPizza
     //EditPizza         skicka in valdpizza i controllen? kanske inte spelar någon roll om den kan göras i open alltid
 
     //att i flera steg lägga till och ta bort produkter i en order för att sedan godkänna den.När
@@ -69,10 +66,9 @@ namespace Lab3Pizzerian
 
                     default: return false;
                 }
-            } else
-            {
-                return false;
             }
+            
+            return false;
         }
     }
 }

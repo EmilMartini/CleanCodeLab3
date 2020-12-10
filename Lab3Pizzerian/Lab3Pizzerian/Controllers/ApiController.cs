@@ -6,7 +6,6 @@ using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lab3Pizzerian.Controllers
 {
@@ -15,7 +14,6 @@ namespace Lab3Pizzerian.Controllers
     {
         //BIG TODO: GÖRA ALLT REST-ful Pågående / Nästan klart TROR JAG
 
-        //add/remove dricka
         //view ingredients som man kan lägga på
         //bara kunna lägga på saker som kostar
 
@@ -68,7 +66,7 @@ namespace Lab3Pizzerian.Controllers
         }
 
         [SwaggerOperation(Summary = "Add Pizza to cart")]
-        [Route("Cart/{MenuNumber}")]
+        [Route("Cart/Pizza/{MenuNumber}")]
         [HttpPut]
         public IActionResult AddPizza(int MenuNumber)
         {
@@ -77,13 +75,62 @@ namespace Lab3Pizzerian.Controllers
             {
                 return new ConflictObjectResult("You cant add a pizza now");
             }
+
             if (instance.Menu.Count() < MenuNumber || 0 >= MenuNumber)
             {
                 return new ConflictObjectResult("Thats not on the menu");
             }
             var pizzaToAdd = instance.Menu[MenuNumber - 1].Clone();
             instance.Cart.Pizzas.Add((Pizza)pizzaToAdd);
-            return new OkObjectResult($"You have added the pizza {pizzaToAdd.Name} to your order");
+            return new OkObjectResult($"You have added {pizzaToAdd.Name} to your order");
+        }
+
+        [SwaggerOperation(Summary = "Add Drink to cart")]
+        [Route("Cart/Drink/{MenuNumber}")]
+        [HttpPut]
+        public IActionResult AddDrink(int MenuNumber)
+        {
+            MockDb instance = MockDb.GetDbInstance();
+            if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.AddPizza) == false)
+            {
+                return new ConflictObjectResult("You cant add a pizza now");
+            }
+
+            if (instance.Drinks.Count() < MenuNumber || 0 >= MenuNumber)
+            {
+                return new ConflictObjectResult("Thats not on the menu");
+            }
+            var drinkToAdd = instance.Drinks.ElementAt(MenuNumber - 1).Key;
+            instance.Cart.Drinks.Add(drinkToAdd);
+            return new OkObjectResult($"You have added the {drinkToAdd.ToString()} to your order");
+        }
+
+        [SwaggerOperation(Summary = "Remove Drink from cart")]
+        [Route("Cart/Drink/{DrinkNumber}")]
+        [HttpDelete]
+        public IActionResult RemoveDrink(int DrinkNumber)
+        {
+            MockDb instance = MockDb.GetDbInstance();
+            if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.AddPizza) == false)
+            {
+                return new ConflictObjectResult("You cant add a pizza now");
+            }
+
+            if(instance.Cart.Drinks.Count <= 0)
+            {
+                return new ConflictObjectResult("Cannot remove any drinks");
+            }
+
+            var success = instance.RemoveDrink(DrinkNumber);
+
+            if (success)
+            {
+                return new OkObjectResult("Drink removed");
+            }
+            else
+            {
+                return new BadRequestObjectResult("Cannot remove drink");
+            }
         }
 
         [SwaggerOperation(Summary = "Add Ingredient to pizza")]
@@ -196,7 +243,7 @@ namespace Lab3Pizzerian.Controllers
                 return new ConflictObjectResult("You cant place your order now");
             }
             var order = instance.PlaceOrder();
-            if(order == null)
+            if (order == null)
             {
                 return new BadRequestObjectResult("Cannot place an empty order.");
             }
@@ -224,7 +271,7 @@ namespace Lab3Pizzerian.Controllers
             instance.ApplicationManager.SetState(EnumApplicationAction.PlaceOrder);
             return new OkObjectResult(orderMenuModel);
         }
-            
+
         [SwaggerOperation(Summary = "Completes an order")]
         [Route("Order/{OrderId:int}")]
         [HttpPost]
@@ -338,6 +385,23 @@ namespace Lab3Pizzerian.Controllers
             }
         }
 
+        [SwaggerOperation(Summary = "Get available ingredients")]
+        [Route("Ingredients")]
+        [HttpGet]
+        public IActionResult GetIngredients()
+        {
+            MockDb instance = MockDb.GetDbInstance();
+            var ingredients = instance.Ingredients.Select(i => i.Key.Description()).ToList();
+            if (ingredients.Any())
+            {
+                return new OkObjectResult(ingredients);
+            } else
+            {
+                return new NoContentResult();
+            }
+            
+        }
+
         [SwaggerOperation(Summary = "Complete payment for an order")]
         [Route("Payment/{OrderId:int}")]
         [HttpPost]
@@ -353,12 +417,11 @@ namespace Lab3Pizzerian.Controllers
             if (success)
             {
                 return new OkObjectResult("Successfully completed payment for order: " + OrderId);
-            } else
+            }
+            else
             {
                 return new BadRequestObjectResult("Something went wrong. Couldn't complete payment for order: " + OrderId);
             }
         }
-
-        
     }
 }

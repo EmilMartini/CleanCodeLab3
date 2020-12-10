@@ -190,5 +190,13 @@ namespace Lab3Pizzerian
 			Cart = null;
 			return (Cart == null);
         }
+
+        public bool RemoveDrink(int index)
+        {
+			string nameOfDrink = Cart.Drinks.ElementAt(index - 1).ToString();
+			int instancesOfDrink = Cart.Drinks.Where(i => i.ToString() == nameOfDrink).Count();
+			Cart.Drinks.RemoveAt(index - 1);
+			return instancesOfDrink != Cart.Drinks.Where(i => i.ToString() == nameOfDrink).Count();
+        }
     }
 }
