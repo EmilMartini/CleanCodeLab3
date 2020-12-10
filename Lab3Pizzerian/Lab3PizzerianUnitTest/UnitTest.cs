@@ -1,4 +1,6 @@
 using Lab3Pizzerian;
+using Lab3Pizzerian.Controllers;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Lab3PizzerianUnitTest
@@ -6,21 +8,24 @@ namespace Lab3PizzerianUnitTest
     [TestClass]
     public class UnitTest
     {
+        ApiController controller = new ApiController();
+
         [TestMethod]
         public void CreateOrderTest_StateIdle()
         {
-            var instance = MockDb.GetDbInstance();
-            var order = new Order()
-            {
-                ID = 1,
-                Pizzas = new System.Collections.Generic.List<Lab3Pizzerian.Models.Pizza>(),
-                Drinks = new System.Collections.Generic.List<Lab3Pizzerian.Enumerations.EnumDrink>()
-            };
-            var expected = true;
-
-            var actual = instance.CreateOrder(order);
+            var expected = typeof(OkObjectResult);
+            var actual = controller.CreateOrder();
 
             Assert.AreEqual(expected, actual);
-        }       
+        }
+
+        [TestMethod]
+        public void CreateOrderTest_StateCartOpen()
+        {
+            var expected = typeof(ConflictObjectResult);
+            var actual = controller.CreateOrder();
+
+            Assert.AreEqual(expected, actual);
+        }
     }
 }

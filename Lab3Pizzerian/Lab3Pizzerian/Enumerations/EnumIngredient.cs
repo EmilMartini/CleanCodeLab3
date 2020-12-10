@@ -8,37 +8,40 @@ using System.Threading.Tasks;
 
 namespace Lab3Pizzerian.Enumerations
 {
-	public enum EnumIngredient
-	{
-		[Description("Ost")]
-		Ost = 1,
-		[Description("Tomatsås")]
-		Tomatsås = 2,
-		[Description("Skinka")]
-		Skinka = 3,
-		[Description("Ananas")]
-		Ananas = 4,
-		[Description("Champinjoner")]
-		Champinjoner = 5,
-		[Description("Lök")]
-		Lök = 6,
-		[Description("Kebabsås")]
-		Kebabsås = 7,
-		[Description("Räkor")]
-		Räkor = 8,
-		[Description("Musslor")]
-		Musslor = 9,
-		[Description("Kronärtskocka")]
-		Kronärtskocka = 10,
-		[Description("Kebab")]
-		Kebab = 11,
-		[Description("Koriander")]
-		Koriander = 12,
-		[Description("Feferoni")]
-		Feferoni = 13,
-		[Description("Isbergssallad")]
-		Isbergssallad = 14,
-		[Description("Tomat")]
-		Tomat = 15
-	}
+    public enum EnumIngredient
+    {
+
+        [Description("Skinka")]
+        Skinka = 1,
+        [Description("Ananas")]
+        Ananas = 2,
+        [Description("Champinjoner")]
+        Champinjoner = 3,
+        [Description("Lök")]
+        Lök = 4,
+        [Description("Kebabsås")]
+        Kebabsås = 5,
+        [Description("Räkor")]
+        Räkor = 6,
+        [Description("Musslor")]
+        Musslor = 7,
+        [Description("Kronärtskocka")]
+        Kronärtskocka = 8,
+        [Description("Kebab")]
+        Kebab = 9,
+        [Description("Koriander")]
+        Koriander = 10,
+
+        //Free
+        [Description("Feferoni")]
+        Feferoni = 11,
+        [Description("Isbergssallad")]
+        Isbergssallad = 12,
+        [Description("Tomat")]
+        Tomat = 13,
+        [Description("Ost")]
+        Ost = 14,
+        [Description("Tomatsås")]
+        Tomatsås = 15
+    }
 }

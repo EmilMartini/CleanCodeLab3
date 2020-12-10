@@ -50,7 +50,7 @@ namespace Lab3Pizzerian
 				{ EnumDrink.Fanta, 20 },
 				{ EnumDrink.Sprite, 25 }
 		  };
-		public ApplicationManager ApplicationManager { get; } = new ApplicationManager(); // inte säker på att detta är rätt
+		public ApplicationManager ApplicationManager { get; } = new ApplicationManager();
 
 		public static MockDb GetDbInstance()
 		{
@@ -65,12 +65,10 @@ namespace Lab3Pizzerian
 		{
 			return Drinks.Where(x => x.Key == drink).FirstOrDefault().Value;
 		}
-
 		public int GetIngredientPrice(EnumIngredient ingredient)
 		{
 			return Ingredients.Where(x => x.Key == ingredient).FirstOrDefault().Value;
 		}
-
 		public int GetIngredientListPrice(List<EnumIngredient> ingredients)
 		{
 			int totalPrice = 0;
@@ -80,7 +78,6 @@ namespace Lab3Pizzerian
 			}
 			return totalPrice;
 		}
-
 		public int GetCartTotalCost()
 		{
 			int totalCost = 0;
@@ -100,7 +97,6 @@ namespace Lab3Pizzerian
 
 			return totalCost;
 		}
-
 		public int GetOrderTotalCost(Order order)
         {
 			int totalCost = 0;
@@ -118,7 +114,6 @@ namespace Lab3Pizzerian
 			}
 			return totalCost;
 		}
-
 		public bool CreateOrder(Order order)
 		{
 			if (Cart != null)
@@ -131,18 +126,15 @@ namespace Lab3Pizzerian
 				return true;
 			}
 		}
-
 		public bool CompleteOrder(int OrderId)
         {
 			Orders.Where(i => i.ID == OrderId).Select(i => i.OrderStatus = EnumStatus.Done).ToList();
 			return true;
         }
-
 		public List<Order> GetPlacedOrders()
         {
 			return Orders.Where(i => i.OrderStatus == EnumStatus.Placed).ToList();
         }
-
 		public int GetNextOrderId()
         {
 			return Orders.Count() + 1;
@@ -160,18 +152,15 @@ namespace Lab3Pizzerian
 			Cart = null;
 			return tempCart;
         }
-
 		public List<StandardPizzaPrototype> GetMenu()
 		{
 			return Menu;
 		}
-
         public bool CancelOrder(int OrderId)
         {
 			Orders.Where(i => i.ID == OrderId).Select(i => i.OrderStatus = EnumStatus.Canceled).ToList();
 			return true;
 		}
-
         public bool CompletePayment(int orderId)
         {
             try
@@ -184,13 +173,11 @@ namespace Lab3Pizzerian
 				return false;
             }
         }
-
         public bool CancelCart()
         {
 			Cart = null;
 			return (Cart == null);
         }
-
         public bool RemoveDrink(int index)
         {
 			string nameOfDrink = Cart.Drinks.ElementAt(index - 1).ToString();

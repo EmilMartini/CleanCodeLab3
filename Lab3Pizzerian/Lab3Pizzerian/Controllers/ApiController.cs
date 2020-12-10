@@ -12,12 +12,7 @@ namespace Lab3Pizzerian.Controllers
     [Route("Api")]
     public class ApiController : Controller
     {
-        //BIG TODO: GÖRA ALLT REST-ful Pågående / Nästan klart TROR JAG
-
-        //view ingredients som man kan lägga på
-        //bara kunna lägga på saker som kostar
-
-        [SwaggerOperation(Summary = "Creates a new order")]
+        [SwaggerOperation(Summary = "Creates a new cart")]
         [Route("Cart")]
         [HttpPost]
         public IActionResult CreateOrder()
@@ -148,7 +143,7 @@ namespace Lab3Pizzerian.Controllers
             {
                 return new ConflictObjectResult("You can only add ingreditents to a pizza you have added");
             }
-            if (IngredientNumber <= 0 || IngredientNumber > 15)
+            if (IngredientNumber <= 0 || IngredientNumber > 10)
             {
                 return new ConflictObjectResult("You can only add ingreditents that exists");
             }
@@ -354,7 +349,7 @@ namespace Lab3Pizzerian.Controllers
         }
 
         [SwaggerOperation(Summary = "Get current pizza menu")]
-        [Route("Menu")]
+        [Route("Menu/Pizza")]
         [HttpGet]
         public IActionResult GetMenu()
         {
@@ -386,12 +381,12 @@ namespace Lab3Pizzerian.Controllers
         }
 
         [SwaggerOperation(Summary = "Get available ingredients")]
-        [Route("Ingredients")]
+        [Route("Menu/Ingredients")]
         [HttpGet]
         public IActionResult GetIngredients()
         {
             MockDb instance = MockDb.GetDbInstance();
-            var ingredients = instance.Ingredients.Select(i => i.Key.Description()).ToList();
+            var ingredients = instance.Ingredients.Where(i => i.Value > 0).Select(i => new { Ingredient = (i.Key.Description()), Price = i.Value }).ToList();
             if (ingredients.Any())
             {
                 return new OkObjectResult(ingredients);
