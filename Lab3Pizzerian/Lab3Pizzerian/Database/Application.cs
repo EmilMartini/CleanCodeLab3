@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace Lab3Pizzerian
 {
-	public class MockDb
+	public class Application
 	{
-		private static MockDb instance = null;
+		private static Application instance = null;
 		public Order Cart { get; set; } = null;
 		private List<Order> Orders { get; set; } = new List<Order>();
 		public readonly List<StandardPizzaPrototype> Menu = new List<StandardPizzaPrototype>
@@ -52,11 +52,11 @@ namespace Lab3Pizzerian
 		  };
 		public ApplicationManager ApplicationManager { get; } = new ApplicationManager();
 
-		public static MockDb GetDbInstance()
+		public static Application GetApplicationInstance()
 		{
 			if (instance == null)
 			{
-				instance = new MockDb();
+				instance = new Application();
 			}
 			return instance;
 		}

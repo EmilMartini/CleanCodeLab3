@@ -64,7 +64,8 @@ namespace Lab3Pizzerian
                         State = EnumApplicationState.CartOpen;
                         return true;
 
-                    default: return false;
+                    default: 
+                        return false;
                 }
             }
             

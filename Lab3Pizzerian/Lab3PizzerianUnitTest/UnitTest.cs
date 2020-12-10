@@ -11,21 +11,35 @@ namespace Lab3PizzerianUnitTest
         ApiController controller = new ApiController();
 
         [TestMethod]
-        public void CreateOrderTest_StateIdle()
+        public void IsActionAllowedTest()
         {
-            var expected = typeof(OkObjectResult);
-            var actual = controller.CreateOrder();
+            var instance = Application.GetApplicationInstance();
 
-            Assert.AreEqual(expected, actual);
+            var actual1 = instance.ApplicationManager.IsActionAllowed(Lab3Pizzerian.Enumerations.EnumApplicationAction.PlaceOrder);
+            var actual2 = instance.ApplicationManager.IsActionAllowed(Lab3Pizzerian.Enumerations.EnumApplicationAction.OpenNewOrder);
+            var actual3 = instance.ApplicationManager.IsActionAllowed(Lab3Pizzerian.Enumerations.EnumApplicationAction.CancelCart);
+            var actual4 = instance.ApplicationManager.IsActionAllowed(Lab3Pizzerian.Enumerations.EnumApplicationAction.GetPlacedOrders);
+
+            Assert.AreEqual(false, actual1);
+            Assert.AreEqual(true, actual2);
+            Assert.AreEqual(false, actual3);
+            Assert.AreEqual(true, actual4);
         }
 
         [TestMethod]
-        public void CreateOrderTest_StateCartOpen()
+        public void SetStateTest()
         {
-            var expected = typeof(ConflictObjectResult);
-            var actual = controller.CreateOrder();
+            var instance = Application.GetApplicationInstance();
 
-            Assert.AreEqual(expected, actual);
+            var actual1 = instance.ApplicationManager.SetState(Lab3Pizzerian.Enumerations.EnumApplicationAction.OpenNewOrder);
+            var actual2 = instance.ApplicationManager.SetState(Lab3Pizzerian.Enumerations.EnumApplicationAction.CompleteOrder);
+            var actual3 = instance.ApplicationManager.SetState(Lab3Pizzerian.Enumerations.EnumApplicationAction.EditPizza);
+            var actual4 = instance.ApplicationManager.SetState(Lab3Pizzerian.Enumerations.EnumApplicationAction.GetPlacedOrders);
+
+            Assert.AreEqual(true, actual1);
+            Assert.AreEqual(false, actual2);
+            Assert.AreEqual(false, actual3);
+            Assert.AreEqual(false, actual4);
         }
     }
 }

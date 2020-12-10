@@ -17,7 +17,7 @@ namespace Lab3Pizzerian.Controllers
         [HttpPost]
         public IActionResult CreateOrder()
         {
-            MockDb instance = MockDb.GetDbInstance();
+            Application instance = Application.GetApplicationInstance();
             if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.OpenNewOrder) == false)
             {
                 return new ConflictObjectResult("You cant open a new order now");
@@ -41,7 +41,7 @@ namespace Lab3Pizzerian.Controllers
         [HttpDelete]
         public IActionResult EmptyCart()
         {
-            MockDb instance = MockDb.GetDbInstance();
+            Application instance = Application.GetApplicationInstance();
             if (!instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.CancelCart))
             {
                 return new ConflictObjectResult("You cannot empty current cart right now.");
@@ -65,7 +65,7 @@ namespace Lab3Pizzerian.Controllers
         [HttpPut]
         public IActionResult AddPizza(int MenuNumber)
         {
-            MockDb instance = MockDb.GetDbInstance();
+            Application instance = Application.GetApplicationInstance();
             if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.AddPizza) == false)
             {
                 return new ConflictObjectResult("You cant add a pizza now");
@@ -85,7 +85,7 @@ namespace Lab3Pizzerian.Controllers
         [HttpPut]
         public IActionResult AddDrink(int MenuNumber)
         {
-            MockDb instance = MockDb.GetDbInstance();
+            Application instance = Application.GetApplicationInstance();
             if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.AddPizza) == false)
             {
                 return new ConflictObjectResult("You cant add a pizza now");
@@ -105,7 +105,7 @@ namespace Lab3Pizzerian.Controllers
         [HttpDelete]
         public IActionResult RemoveDrink(int DrinkNumber)
         {
-            MockDb instance = MockDb.GetDbInstance();
+            Application instance = Application.GetApplicationInstance();
             if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.AddPizza) == false)
             {
                 return new ConflictObjectResult("You cant add a pizza now");
@@ -133,7 +133,7 @@ namespace Lab3Pizzerian.Controllers
         [HttpPut]
         public IActionResult AddIngreditenToPizza(int PizzaNumber, int IngredientNumber)
         {
-            MockDb instance = MockDb.GetDbInstance();
+            Application instance = Application.GetApplicationInstance();
             if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.EditPizza) == false)
             {
                 return new ConflictObjectResult("You cant Edit a pizza now");
@@ -157,7 +157,7 @@ namespace Lab3Pizzerian.Controllers
         [HttpDelete]
         public IActionResult RemoveAddedIngreditenFromPizza(int PizzaNumber, int IngredientNumber)
         {
-            MockDb instance = MockDb.GetDbInstance();
+            Application instance = Application.GetApplicationInstance();
             if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.EditPizza) == false)
             {
                 return new ConflictObjectResult("You cant Edit a pizza now");
@@ -185,7 +185,7 @@ namespace Lab3Pizzerian.Controllers
         [HttpGet]
         public IActionResult ViewCart()
         {
-            MockDb instance = MockDb.GetDbInstance();
+            Application instance = Application.GetApplicationInstance();
             if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.ViewCart) == false)
             {
                 return new ConflictObjectResult("You cant view your cart now");
@@ -232,7 +232,7 @@ namespace Lab3Pizzerian.Controllers
         [HttpPost]
         public IActionResult PlaceOrder()
         {
-            MockDb instance = MockDb.GetDbInstance();
+            Application instance = Application.GetApplicationInstance();
             if (!instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.PlaceOrder))
             {
                 return new ConflictObjectResult("You cant place your order now");
@@ -272,7 +272,7 @@ namespace Lab3Pizzerian.Controllers
         [HttpPost]
         public IActionResult CompleteOrder(int OrderId)
         {
-            MockDb instance = MockDb.GetDbInstance();
+            Application instance = Application.GetApplicationInstance();
             if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.CompleteOrder) == false)
             {
                 return new ConflictObjectResult("You cannot complete the order right now.");
@@ -294,7 +294,7 @@ namespace Lab3Pizzerian.Controllers
         [HttpDelete]
         public IActionResult CancelOrder(int OrderId)
         {
-            MockDb instance = MockDb.GetDbInstance();
+            Application instance = Application.GetApplicationInstance();
             if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.CancelOrder) == false)
             {
                 return new ConflictObjectResult("You cant Edit a pizza now");
@@ -317,7 +317,7 @@ namespace Lab3Pizzerian.Controllers
         [HttpGet]
         public IActionResult GetPlacedOrders()
         {
-            MockDb instance = MockDb.GetDbInstance();
+            Application instance = Application.GetApplicationInstance();
             if (!instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.GetPlacedOrders))
             {
                 return new ConflictObjectResult("You cannot view placed orders right now.");
@@ -353,7 +353,7 @@ namespace Lab3Pizzerian.Controllers
         [HttpGet]
         public IActionResult GetMenu()
         {
-            MockDb instance = MockDb.GetDbInstance();
+            Application instance = Application.GetApplicationInstance();
             var pizzaMenu = instance.GetMenu();
             var pizzaMenuModel = new List<PizzaDisplayMenuModel>();
             int menuNumber = 1;
@@ -385,7 +385,7 @@ namespace Lab3Pizzerian.Controllers
         [HttpGet]
         public IActionResult GetIngredients()
         {
-            MockDb instance = MockDb.GetDbInstance();
+            Application instance = Application.GetApplicationInstance();
             var ingredients = instance.Ingredients.Where(i => i.Value > 0).Select(i => new { Ingredient = (i.Key.Description()), Price = i.Value }).ToList();
             if (ingredients.Any())
             {
@@ -402,7 +402,7 @@ namespace Lab3Pizzerian.Controllers
         [HttpPost]
         public IActionResult CompletePayment(int OrderId)
         {
-            MockDb instance = MockDb.GetDbInstance();
+            Application instance = Application.GetApplicationInstance();
             if (!instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.GetPlacedOrders))
             {
                 return new ConflictObjectResult("You cannot complete orderpayment right now.");
