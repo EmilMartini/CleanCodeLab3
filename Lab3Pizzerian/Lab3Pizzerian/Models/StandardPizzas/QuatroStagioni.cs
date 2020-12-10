@@ -14,13 +14,13 @@ namespace Lab3Pizzerian.Models
 		{
 			Name = "Quatro Stagioni";
 			Standard = new List<EnumIngredient>{
-						  EnumIngredient.Ost,
-						  EnumIngredient.Tomatsås,
-						  EnumIngredient.Skinka,
-						  EnumIngredient.Räkor,
-						  EnumIngredient.Musslor,
-						  EnumIngredient.Champinjoner,
-						  EnumIngredient.Kronärtskocka };
+						  EnumIngredient.Cheese,
+						  EnumIngredient.Tomatosauce,
+						  EnumIngredient.Ham,
+						  EnumIngredient.Shrimps,
+						  EnumIngredient.Clams,
+						  EnumIngredient.Mushrooms,
+						  EnumIngredient.Artichoke };
 			StandardPrice = 115;
 			Extras = new List<EnumIngredient>();
 		}

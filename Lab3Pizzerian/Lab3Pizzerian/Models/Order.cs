@@ -8,7 +8,7 @@ namespace Lab3Pizzerian
 	//TODO Timestamp för när ordern placeas.
 	public class Order
 	{
-		public int ID { get; set; }
+		public int Id { get; set; }
 		public List<Pizza> Pizzas { get; set; } = new List<Pizza>();
 		public List<EnumDrink> Drinks { get; set; } = new List<EnumDrink>();
 		public EnumStatus OrderStatus { get; set; } = EnumStatus.Created;

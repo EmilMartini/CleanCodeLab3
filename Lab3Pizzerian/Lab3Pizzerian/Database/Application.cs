@@ -28,21 +28,21 @@ namespace Lab3Pizzerian
 		  };
 		public readonly Dictionary<EnumIngredient, int> Ingredients = new Dictionary<EnumIngredient, int>
 		  {
-				{ EnumIngredient.Ost, 0},
-				{ EnumIngredient.Tomatsås, 0},
-				{ EnumIngredient.Feferoni, 0},
-				{ EnumIngredient.Tomat, 0},
-				{ EnumIngredient.Isbergssallad, 0},
-				{ EnumIngredient.Skinka, 10},
-				{ EnumIngredient.Ananas, 10},
-				{ EnumIngredient.Champinjoner, 10},
-				{ EnumIngredient.Lök, 10},
-				{ EnumIngredient.Kebabsås, 10},
-				{ EnumIngredient.Räkor, 15},
-				{ EnumIngredient.Musslor, 15},
-				{ EnumIngredient.Kronärtskocka, 15},
+				{ EnumIngredient.Cheese, 0},
+				{ EnumIngredient.Tomatosauce, 0},
+				{ EnumIngredient.Pepperoni, 0},
+				{ EnumIngredient.Tomato, 0},
+				{ EnumIngredient.Salad, 0},
+				{ EnumIngredient.Ham, 10},
+				{ EnumIngredient.Pineapple, 10},
+				{ EnumIngredient.Mushrooms, 10},
+				{ EnumIngredient.Onion, 10},
+				{ EnumIngredient.KebabSauce, 10},
+				{ EnumIngredient.Shrimps, 15},
+				{ EnumIngredient.Clams, 15},
+				{ EnumIngredient.Artichoke, 15},
 				{ EnumIngredient.Kebab, 20},
-				{ EnumIngredient.Koriander, 20},
+				{ EnumIngredient.Coriander, 20},
 		  };
 		public readonly Dictionary<EnumDrink, int> Drinks = new Dictionary<EnumDrink, int>
 		  {
@@ -98,7 +98,7 @@ namespace Lab3Pizzerian
 			return totalCost;
 		}
 		public int GetOrderTotalCost(Order order)
-        {
+		{
 			int totalCost = 0;
 			foreach (var drink in order.Drinks)
 			{
@@ -126,64 +126,76 @@ namespace Lab3Pizzerian
 				return true;
 			}
 		}
-		public bool CompleteOrder(int OrderId)
-        {
-			Orders.Where(i => i.ID == OrderId).Select(i => i.OrderStatus = EnumStatus.Done).ToList();
+		public bool CompleteOrder(int orderId)
+		{
+			if (Orders.FirstOrDefault(x => x.Id == orderId) == null)
+			{
+				return false;
+			}
+			Orders.Where(i => i.Id == orderId).Select(i => i.OrderStatus = EnumStatus.Done).ToList();
 			return true;
-        }
+		}
 		public List<Order> GetPlacedOrders()
-        {
+		{
 			return Orders.Where(i => i.OrderStatus == EnumStatus.Placed).ToList();
-        }
+		}
 		public int GetNextOrderId()
-        {
+		{
 			return Orders.Count() + 1;
-        }
-        public Order PlaceOrder()
-        {
-			if(Cart.Pizzas.Count <= 0 && Cart.Drinks.Count <= 0)
-            {
+		}
+		public Order PlaceOrder()
+		{
+			if (Cart.Pizzas.Count <= 0 && Cart.Drinks.Count <= 0)
+			{
 				return null;
-            }
+			}
 
 			Cart.OrderStatus = EnumStatus.Processing;
 			Orders.Add(Cart);
 			var tempCart = Cart;
 			Cart = null;
 			return tempCart;
-        }
+		}
 		public List<StandardPizzaPrototype> GetMenu()
 		{
 			return Menu;
 		}
-        public bool CancelOrder(int OrderId)
-        {
-			Orders.Where(i => i.ID == OrderId).Select(i => i.OrderStatus = EnumStatus.Canceled).ToList();
+		public bool CancelOrder(int orderId)
+		{
+			if (Orders.FirstOrDefault(x => x.Id == orderId) == null)
+			{
+				return false;
+			}
+			Orders.Where(i => i.Id == orderId).Select(i => i.OrderStatus = EnumStatus.Canceled).ToList();
 			return true;
 		}
-        public bool CompletePayment(int orderId)
-        {
-            try
-            {
-				Orders.Where(i => i.ID == orderId).Select(i => i.OrderStatus = EnumStatus.Placed).ToList();
-				return true;
-            }
-            catch (Exception)
-            {
+		public bool CompletePayment(int orderId)
+		{
+			if (Orders.FirstOrDefault(x => x.Id == orderId) == null)
+			{
 				return false;
-            }
-        }
-        public bool CancelCart()
-        {
+			}
+			try
+			{
+				Orders.Where(i => i.Id == orderId).Select(i => i.OrderStatus = EnumStatus.Placed).ToList();
+				return true;
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+		}
+		public bool CancelCart()
+		{
 			Cart = null;
 			return (Cart == null);
-        }
-        public bool RemoveDrink(int index)
-        {
+		}
+		public bool RemoveDrink(int index)
+		{
 			string nameOfDrink = Cart.Drinks.ElementAt(index - 1).ToString();
 			int instancesOfDrink = Cart.Drinks.Where(i => i.ToString() == nameOfDrink).Count();
 			Cart.Drinks.RemoveAt(index - 1);
 			return instancesOfDrink != Cart.Drinks.Where(i => i.ToString() == nameOfDrink).Count();
-        }
-    }
+		}
+	}
 }

@@ -14,15 +14,15 @@ namespace Lab3Pizzerian.Models
 		{
 			Name = "Kebabpizza";
 			Standard = new List<EnumIngredient>{
-						  EnumIngredient.Ost,
-						  EnumIngredient.Tomatsås,
+						  EnumIngredient.Cheese,
+						  EnumIngredient.Tomatosauce,
 						  EnumIngredient.Kebab,
-						  EnumIngredient.Champinjoner,
-						  EnumIngredient.Lök,
-						  EnumIngredient.Feferoni,
-						  EnumIngredient.Isbergssallad,
-						  EnumIngredient.Tomat,
-						  EnumIngredient.Kebabsås };
+						  EnumIngredient.Mushrooms,
+						  EnumIngredient.Onion,
+						  EnumIngredient.Pepperoni,
+						  EnumIngredient.Salad,
+						  EnumIngredient.Tomato,
+						  EnumIngredient.KebabSauce };
 			StandardPrice = 105;
 			Extras = new List<EnumIngredient>();
 		}

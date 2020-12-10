@@ -15,10 +15,10 @@ namespace Lab3Pizzerian.Models
 		{
 			Name = "Hawaii";
 			Standard = new List<EnumIngredient>{
-						  EnumIngredient.Ost,
-						  EnumIngredient.Tomatsås,
-						  EnumIngredient.Skinka,
-						  EnumIngredient.Ananas };
+						  EnumIngredient.Cheese,
+						  EnumIngredient.Tomatosauce,
+						  EnumIngredient.Ham,
+						  EnumIngredient.Pineapple };
 			StandardPrice = 95;
 			Extras = new List<EnumIngredient>();
 		}

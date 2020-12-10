@@ -15,8 +15,8 @@ namespace Lab3Pizzerian.Models
 		{
 			Name = "Margarita";
 			Standard = new List<EnumIngredient>{
-						  EnumIngredient.Ost,
-						  EnumIngredient.Tomatsås};
+						  EnumIngredient.Cheese,
+						  EnumIngredient.Tomatosauce};
 			StandardPrice = 85;
 			Extras = new List<EnumIngredient>();
 		}

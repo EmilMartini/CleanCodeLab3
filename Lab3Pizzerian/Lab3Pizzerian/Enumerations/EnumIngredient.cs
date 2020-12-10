@@ -12,36 +12,36 @@ namespace Lab3Pizzerian.Enumerations
     {
 
         [Description("Skinka")]
-        Skinka = 1,
+        Ham = 1,
         [Description("Ananas")]
-        Ananas = 2,
+        Pineapple = 2,
         [Description("Champinjoner")]
-        Champinjoner = 3,
+        Mushrooms = 3,
         [Description("Lök")]
-        Lök = 4,
+        Onion = 4,
         [Description("Kebabsås")]
-        Kebabsås = 5,
+        KebabSauce = 5,
         [Description("Räkor")]
-        Räkor = 6,
+        Shrimps = 6,
         [Description("Musslor")]
-        Musslor = 7,
+        Clams = 7,
         [Description("Kronärtskocka")]
-        Kronärtskocka = 8,
+        Artichoke = 8,
         [Description("Kebab")]
         Kebab = 9,
         [Description("Koriander")]
-        Koriander = 10,
+        Coriander = 10,
 
         //Free
         [Description("Feferoni")]
-        Feferoni = 11,
+        Pepperoni = 11,
         [Description("Isbergssallad")]
-        Isbergssallad = 12,
+        Salad = 12,
         [Description("Tomat")]
-        Tomat = 13,
+        Tomato = 13,
         [Description("Ost")]
-        Ost = 14,
+        Cheese = 14,
         [Description("Tomatsås")]
-        Tomatsås = 15
+        Tomatosauce = 15
     }
 }

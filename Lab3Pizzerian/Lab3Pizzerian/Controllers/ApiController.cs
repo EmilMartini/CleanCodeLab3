@@ -20,23 +20,23 @@ namespace Lab3Pizzerian.Controllers
             Application instance = Application.GetApplicationInstance();
             if (instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.OpenNewOrder) == false)
             {
-                return new ConflictObjectResult("You cant open a new order now");
+                return new ConflictObjectResult("You cant open a new cart now");
             }
             var order = new Order();
-            order.ID = instance.GetNextOrderId();
+            order.Id = instance.GetNextOrderId();
             var accepted = instance.CreateOrder(order);
             if (accepted)
             {
                 instance.ApplicationManager.SetState(EnumApplicationAction.OpenNewOrder);
-                return new OkObjectResult($"Order created with OrderId: {order.ID}{Environment.NewLine}");
+                return new OkObjectResult($"Cart created with OrderId: {order.Id}{Environment.NewLine}");
             }
             else
             {
-                return new ConflictObjectResult($"OrderId: {order.ID} already exists.");
+                return new ConflictObjectResult($"OrderId: {order.Id} already exists.");
             }
         }
 
-        [SwaggerOperation(Summary = "Empties the current cart")]
+        [SwaggerOperation(Summary = "Removes the current cart")]
         [Route("Cart")]
         [HttpDelete]
         public IActionResult EmptyCart()
@@ -195,7 +195,7 @@ namespace Lab3Pizzerian.Controllers
                 Drinks = new List<string>(),
                 Pizzas = new List<PizzaDisplayModel>(),
                 TotalPrice = instance.GetCartTotalCost(),
-                OrderId = instance.Cart.ID.ToString()
+                OrderId = instance.Cart.Id.ToString()
             };
 
             foreach (var item in instance.Cart.Drinks)
@@ -246,7 +246,7 @@ namespace Lab3Pizzerian.Controllers
 
             var orderMenuModel = new OrderDisplayModel()
             {
-                OrderId = order.ID.ToString(),
+                OrderId = order.Id.ToString(),
                 Drinks = order.Drinks.Select(i => i.Description()).ToList(),
                 TotalPrice = instance.GetOrderTotalCost(order)
             };
@@ -341,7 +341,7 @@ namespace Lab3Pizzerian.Controllers
                 }
                 orderDisplayModel.Drinks = order.Drinks.Select(i => i.Description()).ToList();
                 orderDisplayModel.TotalPrice = instance.GetOrderTotalCost(order);
-                orderDisplayModel.OrderId = order.ID.ToString();
+                orderDisplayModel.OrderId = order.Id.ToString();
                 jsonOrders.Add(orderDisplayModel);
             }
 
