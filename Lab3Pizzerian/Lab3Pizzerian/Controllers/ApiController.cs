@@ -307,6 +307,26 @@ namespace Lab3Pizzerian.Controllers
             return new OkObjectResult(jsonOrders);
         }
 
+        [SwaggerOperation(Summary = "Complete ")]
+        [Route("Payment/{OrderId:int}")]
+        [HttpPost]
+        public IActionResult CompletePayment(int OrderId)
+        {
+            MockDb instance = MockDb.GetDbInstance();
+            if (!instance.ApplicationManager.IsActionAllowed(EnumApplicationAction.GetPlacedOrders))
+            {
+                return new ConflictObjectResult("You cannot complete orderpayment right now.");
+            }
+
+            var success = instance.CompletePayment(OrderId);
+            if (success)
+            {
+                return new OkObjectResult("Successfully completed payment for order: " + OrderId);
+            } else
+            {
+                return new BadRequestObjectResult("Something went wrong. Couldn't complete payment for order: " + OrderId);
+            }
+        }
         // tror detta är fel. efter att ha läst documentationen tror jag att vi ska visa alla som INTE är i orderslistan (känns helknäppt)
         //[Route("Orders")]
         //[HttpGet]

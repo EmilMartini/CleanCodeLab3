@@ -13,6 +13,7 @@ namespace Lab3Pizzerian.Enumerations
 		[Description("Placed")]
 		Placed = 3,
 		[Description("Created")]
-		Created = 4
-	}
+		Created = 4,
+        Processing = 5
+    }
 }

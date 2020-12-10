@@ -149,7 +149,7 @@ namespace Lab3Pizzerian
         }
         public Order PlaceOrder()
         {
-			Cart.OrderStatus = EnumStatus.Placed;
+			Cart.OrderStatus = EnumStatus.Processing;
 			Orders.Add(Cart);
 			var tempCart = Cart;
 			Cart = null;
@@ -166,5 +166,18 @@ namespace Lab3Pizzerian
 			Orders.Where(i => i.ID == OrderId).Select(i => i.OrderStatus = EnumStatus.Canceled).ToList();
 			return true;
 		}
+
+        public bool CompletePayment(int orderId)
+        {
+            try
+            {
+				Orders.Where(i => i.ID == orderId).Select(i => i.OrderStatus = EnumStatus.Placed).ToList();
+				return true;
+            }
+            catch (Exception)
+            {
+				return false;
+            }
+        }
     }
 }

@@ -14,6 +14,7 @@ namespace Lab3Pizzerian.Enumerations
 		CompleteOrder = 5,
 		CancelOrder = 6,
 		ViewCart = 7,
-        GetPlacedOrders = 8,
+		CompletePayment = 8,
+        GetPlacedOrders = 9,
     }
 }
