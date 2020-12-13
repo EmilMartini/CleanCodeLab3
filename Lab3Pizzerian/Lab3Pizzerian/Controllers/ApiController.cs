@@ -1,6 +1,7 @@
 ﻿using Lab3Pizzerian.Enumerations;
 using Lab3Pizzerian.Extensions;
 using Lab3Pizzerian.Models;
+using Lab3Pizzerian.Models.DisplayModels;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -389,7 +390,18 @@ namespace Lab3Pizzerian.Controllers
             var ingredients = instance.Ingredients.Where(i => i.Value > 0).Select(i => new { Ingredient = (i.Key.Description()), Price = i.Value }).ToList();
             if (ingredients.Any())
             {
-                return new OkObjectResult(ingredients);
+                List<IngredientDisplayModel> ingredientModels = new List<IngredientDisplayModel>();
+                foreach (var ingredient in ingredients)
+                {
+                    ingredientModels.Add(new IngredientDisplayModel()
+                    {
+                        Number = ingredients.IndexOf(ingredient) + 1,
+                        Name = ingredient.Ingredient,
+                        Price = ingredient.Price
+                    });
+                }
+
+                return new OkObjectResult(ingredientModels);
             } else
             {
                 return new NoContentResult();
@@ -406,7 +418,19 @@ namespace Lab3Pizzerian.Controllers
             var drinks = instance.Drinks.Select(i => new { Ingredient = (i.Key.Description()), Price = i.Value }).ToList();
             if (drinks.Any())
             {
-                return new OkObjectResult(drinks);
+                List<DrinkDisplayModel> drinkDisplayModels = new List<DrinkDisplayModel>();
+
+                foreach (var drink in drinks)
+                {
+                    drinkDisplayModels.Add(new DrinkDisplayModel()
+                    {
+                        Number = drinks.IndexOf(drink) + 1,
+                        Name = drink.Ingredient,
+                        Price = drink.Price
+                    });
+                }
+
+                return new OkObjectResult(drinkDisplayModels);
             }
             else
             {
